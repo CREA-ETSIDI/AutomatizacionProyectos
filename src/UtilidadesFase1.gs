@@ -40,7 +40,7 @@ function EnviarEmailErrorMatriculas(email, nombre, failed)
 {
   console.log(email);
   let text = "Loren Ipsum";
-  if(failed.length == 1)
+  if(failed.length == 1) //Se generan textos distintos según sea en singular o plural
   {
     text = "Hola " + nombre + ".\nTe escribimos en relación al formulario de proyectos que has rellenado ya que uno de los números de matrícula que has introducido no es válido. El número introducido en cuestión es: " + failed[0] + ".\n\nEste correo se ha generado automágicamente, si crees que nuestro bot ha cometido un error, no dudes en ponerte en contacto con uno de nuestros humanos a través de telegram, whatsapp, discord, instagram, twitter o por la ETSIDI. De lo contrario, vuelve a rellenar el formulario introduciendo los datos correctamente, nosotros haremos como si esto no hubiese pasado ;)";
   }
@@ -56,15 +56,40 @@ function EnviarEmailErrorMatriculas(email, nombre, failed)
   GmailApp.sendEmail(email, "Error en las matrículas introducidas", text);
 }
 
-function ComprobarSociosCREA(numeroMat)
+function EnviarEmailDiscrepanciaMatriculas(email, nombre, n_integrantes, n_matriculas)
 {
-  let numerosMat = inscripciones.getRange(2, nMatIndex, inscripciones.getLastRow()-1).getValues();
-  for(let i = 0; i < numerosMat.length; i++)
+  text = "Hola " + nombre + ".\nTe escribimos en relación al formulario de proyectos que has rellenado ya que el número de integrantes que has introducido (" + n_integrantes + ") no coincide con la cantidad de números de matrícula introducidos (" + n_matriculas + ") .\n\nEste correo se ha generado automágicamente, si crees que nuestro bot ha cometido un error, no dudes en ponerte en contacto con uno de nuestros humanos a través de telegram, whatsapp, discord, instagram, twitter o por la ETSIDI. De lo contrario, vuelve a rellenar el formulario introduciendo los datos correctamente, nosotros haremos como si esto no hubiese pasado ;)";
+  GmailApp().sendEmail(email, "Error en las matrículas introducidas", text);
+}
+
+//https://dev.to/huyddo/find-duplicate-or-repeat-elements-in-js-array-3cl3#:~:text=Using%20iteration,the%20array%20contains%20duplicate%20elements.
+function ComprobarDuplicadosMatriculas(nMats)
+{
+  for(let i = 0; i < nMats.length; i++)
   {
-    if(numeroMat == numerosMat[i][0])
+    if(nMats.indexOf(nMats[i]) != nMats.lastIndexOf(nMats[i]))
     {
-      return i + 2;
+      nMats.splice(nMats.lastIndexOf(nMats[i]), 1);
     }
   }
-  return false;
+  return nMats;
+}
+
+function ComprobarSociosCREA(nMats)
+{
+  let inscritos = 0;
+  for(let i = 0; i < nMats.length; i++)
+  {
+    if(ComprobarSocioCREA(nMats[i]))
+    {
+      inscritos++;
+    }
+  }
+  return inscritos;
+}
+
+function EnviarEmailMuyPocosInscritos(email, nombre)
+{
+  text = "Hola " + nombre + ".\nTe escribimos en relación al formulario de proyectos que has rellenado ya que hemos detectado que menos del 50% de los integrantes están inscritos en el CREA, por lo que el proyecto no puede iniciar.\n\nEste correo se ha generado automágicamente, si crees que nuestro bot ha cometido un error, no dudes en ponerte en contacto con uno de nuestros humanos a través de telegram, whatsapp, discord, instagram, twitter o por la ETSIDI. De lo contrario, inscribios :v";
+  GmailApp().sendEmail(email, "Error en las matrículas introducidas", text);
 }

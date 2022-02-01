@@ -1,7 +1,8 @@
 function StartUnitTesting() {
   let unitsToTest = [
     TestArrayzarMatriculas,
-    TestComprobarSociosCREA
+    TestComprobarSociosCREA,
+    TestComprobarDuplicadosMatriculas
   ]; //Declaramos un array con las funciones que testean automáticamente que las unidades funcionen correctamente
   let pass = 0;
   unitsToTest.forEach(function(element, index){ //Recorre el vector de funciones y comprueba que todo funcione
@@ -45,6 +46,24 @@ function TestArrayzarMatriculas()
   return true;
 }
 
+function TestComprobarDuplicadosMatriculas()
+{
+  let matriculas = [
+    ["12345", "67890", "12345", "13579", "24680"],
+    ["12345", "67890", "13579", "24680", "12345"],
+    ["12345", "67890", "13579", "24680", "24680"],
+    ["12345", "12345", "67890", "13579", "24680"]
+  ];
+  for(let i = 0; i < matriculas.length; i++)
+  {
+    if(JSON.stringify(ComprobarDuplicadosMatriculas(matriculas[i])) != JSON.stringify(["12345", "67890", "13579", "24680"]))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 function TestComprobarSociosCREA()
 {
   for(let i = 0; i < n_mats.length; i++)
@@ -55,4 +74,10 @@ function TestComprobarSociosCREA()
     }
   }
   return true;
+}
+
+function test()
+{
+  let text = "0123456789";
+  console.log(text.substring(2,7));
 }
