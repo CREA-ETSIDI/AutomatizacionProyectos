@@ -1,4 +1,6 @@
-//LicenseDisclaimer
+// Copyright Club de Robótica y Electrónica 2022.
+// Licensed under the EUPL-1.2
+
 function ArrayzarMatriculas(texto)
 {
   texto = texto + " "; //Añadimos un espacio al final del texto para tener un caracter no numérico que acabe el string (a falta de un buen '\0'...)

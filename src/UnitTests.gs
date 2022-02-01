@@ -1,3 +1,6 @@
+// Copyright Club de Robótica y Electrónica 2022.
+// Licensed under the EUPL-1.2
+
 function StartUnitTesting() {
   let unitsToTest = [
     TestArrayzarMatriculas,
@@ -78,6 +81,16 @@ function TestComprobarSociosCREA()
 
 function test()
 {
-  let text = "0123456789";
-  console.log(text.substring(2,7));
+  console.log("Hola ☺");
+}
+
+function test_gen_generarArrayCalendario() {
+  let mtx = generarArrayCalendario();
+  console.log(mtx);
+  mtx[0][10] = 8;
+  for (let i = 0; i < mtx.length; ++i) {
+    mtx[i][i] = 69;
+  }
+  console.log(mtx);
+  return;
 }

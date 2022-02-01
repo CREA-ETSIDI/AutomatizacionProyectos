@@ -1,4 +1,6 @@
-//LicenseDisclaimer
+// Copyright Club de Robótica y Electrónica 2022.
+// Licensed under the EUPL-1.2
+
 function ComprobacionInicial()
 {
   let lastResponse = responses.getRange(lastRow, 1, 1, responses.getLastColumn()).getValues()[0]; //Almacenamos en un vector las respuestas a todas las preguntas de la última persona que ha rellenado el formulario
@@ -20,4 +22,5 @@ function ComprobacionInicial()
   {
     EnviarEmailMuyPocosInscritos(lastResponse[senderEmailIndex-1], lastResponse[nombreResponsableIndex-1]);
   }
+  
 }
