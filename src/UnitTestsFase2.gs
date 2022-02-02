@@ -1,9 +1,15 @@
 // Copyright Club de Robótica y Electrónica 2022.
 // Licensed under the EUPL-1.2
 
-function test_proyectoAprobado() {
+function test_proyectoAprobadoPorCREA() {
   const input = 2;
-  proyectoAprobado(input);
+  proyectoAprobadoPorCREA(input);
+}
+
+function test_proyectoDecisionResponsable() {
+  let aprobado = true;
+  const filaRaw = 2;
+  proyectoDecisionResponsable(aprobado, filaRaw);
 }
 
 function test_franjasToText() {

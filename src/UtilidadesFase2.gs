@@ -34,6 +34,7 @@ function respuestasDiasToMatrix(diasStringList) {
 
 function getFranjasAceptadasDenegadas(calendario, propuesta) {
   /* Obtiene las franjas aceptadas y denegadas, o sea, las que coinciden y las que no, de una propuesta respecto de un calendario */
+  // Problema dimensional aquí
   let aceptadas = generarArrayCalendario();
   let denegadas = generarArrayCalendario();
   for (let listaDiaN in calendario) {
@@ -64,10 +65,26 @@ function franjasToText(franja) {
       }
     }
     if (!escogidoAlguno) {
-      tmpTxt += "Nada que indicar en este día";
+      tmpTxt += "Nada que mostrar";
+    }
+    else {
+      // Eliminamos coma y espacio del final
+      tmpTxt = tmpTxt.slice(0, -2);
     }
     tmpTxt += "\n";
   }
 
   return tmpTxt;
+}
+
+function addFranjasToCalendarioSheet(matrizFranjas, proyID) {
+  /* Toma una matriz numérica de franjas y las mete al calendario */
+  // Problema dimensional aquí
+  for (let listaDiaN in matrizFranjas) {
+    for (let horaDiaN in matrizFranjas[listaDiaN]) {
+      if(!matrizFranjas[listaDiaN][horaDiaN]) { // Este check es el que necesito ???
+        horarios.getRange(2+horaDiaN, 4+listaDiaN).setValue(proyID); // Ponemos el ID del proyecto para que luego sea más fácil hacer una búsqueda inversa
+      }
+    }
+  }
 }
