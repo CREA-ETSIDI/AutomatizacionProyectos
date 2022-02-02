@@ -6,6 +6,17 @@ function test_proyectoAprobado() {
   proyectoAprobado(input);
 }
 
+function test_franjasToText() {
+  let input = [ 
+    [ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [ 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0 ] ];
+  let leOutput = franjasToText(input);
+  console.log(leOutput);
+}
+
 function test_horariosParser() {
   const input = [ // Por confirmar que es el posible input. Deben generarse desde el formulario.
       "Martes no, 13:30-14:30, 19:30-20:00",
