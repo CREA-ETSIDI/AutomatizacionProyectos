@@ -22,5 +22,4 @@ function ComprobacionInicial()
   {
     EnviarEmailMuyPocosInscritos(lastResponse[senderEmailIndex-1], lastResponse[nombreResponsableIndex-1]);
   }
-  
 }

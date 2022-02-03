@@ -77,18 +77,6 @@ function franjasToText(franja) {
   return tmpTxt;
 }
 
-function addFranjasToCalendarioSheet(matrizFranjas, proyID) {
-  /* Toma una matriz numérica de franjas y las mete al calendario */
-  // Problema dimensional aquí
-  for (let listaDiaN in matrizFranjas) {
-    for (let horaDiaN in matrizFranjas[listaDiaN]) {
-      if(!matrizFranjas[listaDiaN][horaDiaN]) { // Este check es el que necesito ???
-        horarios.getRange(2+horaDiaN, 4+listaDiaN).setValue(proyID); // Ponemos el ID del proyecto para que luego sea más fácil hacer una búsqueda inversa
-      }
-    }
-  }
-}
-
 function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosProyecto){
   // Ahora debe informarse al líder del proyecto de cuáles se han aceptado y cuáles denegado
   let tmpCorreoProcesamientoSolicitudes = "Hola, te informamos de los horarios que se pueden reservar y cuáles no de su previa solicitud: \nFranjas reservadas:\n"
@@ -97,7 +85,7 @@ function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosPr
   + franjasToText(franjasDenegadas)
   + automagicoSignature;
 
-  GmailApp.sendEmail(datosProyecto[proyIndex.responsable.email],"Confirmar horario disponible para su proyecto " + datosProyecto[proyIndex.titulo], tmpCorreoProcesamientoSolicitudes);
+  GmailApp.sendEmail(datosProyecto[prjIndex.responsable.email],"Confirmar horario disponible para su proyecto " + datosProyecto[prjIndex.titulo], tmpCorreoProcesamientoSolicitudes);
 
-  console.info("Se ha enviado un correo a " + datosProyecto[proyIndex.responsable.nombre] + " para ver si acepta los horarios ")
+  console.info("Se ha enviado un correo a " + datosProyecto[prjIndex.responsable.nombre] + " para ver si acepta los horarios ")
 }

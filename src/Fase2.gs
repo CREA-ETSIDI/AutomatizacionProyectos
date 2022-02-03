@@ -5,11 +5,11 @@ function proyectoAprobadoPorCREA(filaProyectoRaw) { // Como mínimo debe ser 2, 
   let datosProyecto = responses.getRange(filaProyectoRaw, 1, 1, responses.getLastColumn()).getValues()[0];
 
   let opcionesHorasSolicitadas = [
-    horariosParser(datosProyecto[proyIndex.franjasDias.lun]),
-    horariosParser(datosProyecto[proyIndex.franjasDias.mar]),
-    horariosParser(datosProyecto[proyIndex.franjasDias.mie]),
-    horariosParser(datosProyecto[proyIndex.franjasDias.jue]),
-    horariosParser(datosProyecto[proyIndex.franjasDias.vie]),
+    horariosParser(datosProyecto[prjIndex.franjasDias.lun]),
+    horariosParser(datosProyecto[prjIndex.franjasDias.mar]),
+    horariosParser(datosProyecto[prjIndex.franjasDias.mie]),
+    horariosParser(datosProyecto[prjIndex.franjasDias.jue]),
+    horariosParser(datosProyecto[prjIndex.franjasDias.vie]),
   ] // Matriz con las horas seleccionadas en listas de strings
   let franjasSolicitadas = respuestasDiasToMatrix(opcionesHorasSolicitadas); // Matriz 13*5 de ceros y unos
   let franjasOcupadas    = horarios.getRange(2, 4, 13, 5).getValues(); // Franjas ya ocupadas por otros proyectos
@@ -18,22 +18,22 @@ function proyectoAprobadoPorCREA(filaProyectoRaw) { // Como mínimo debe ser 2, 
   return;
 }
 
-function proyectoDecisionResponsable(esAprobado, filaProyectoRow) {
-  let rangoProyecto = responses.getRange(filaProyectoRow, 1, 1, responses.getLastColumn())
+function proyectoDecisionResponsable(esAprobado, filaProj) {
+  let rangoProyecto = responses.getRange(filaProj, 1, 1, responses.getLastColumn())
   let datosProyecto = rangoProyecto.getValues()[0];
   let opcionesHorasSolicitadas = [
-    horariosParser(datosProyecto[proyIndex.franjasDias.lun]),
-    horariosParser(datosProyecto[proyIndex.franjasDias.mar]),
-    horariosParser(datosProyecto[proyIndex.franjasDias.mie]),
-    horariosParser(datosProyecto[proyIndex.franjasDias.jue]),
-    horariosParser(datosProyecto[proyIndex.franjasDias.vie]),
+    horariosParser(datosProyecto[prjIndex.franjasDias.lun]),
+    horariosParser(datosProyecto[prjIndex.franjasDias.mar]),
+    horariosParser(datosProyecto[prjIndex.franjasDias.mie]),
+    horariosParser(datosProyecto[prjIndex.franjasDias.jue]),
+    horariosParser(datosProyecto[prjIndex.franjasDias.vie]),
   ] // Matriz con las horas seleccionadas en listas de strings
 
   if (esAprobado) {
-    console.info("Se ha aceptado el proyecto " + datosProyecto[proyIndex.titulo] + " en fila #" + filaProyectoRow + ". Moviendolo a lista de proyectos aceptados");
+    console.info("Se ha aceptado el proyecto " + datosProyecto[prjIndex.titulo] + " en fila #" + filaProj + ". Moviendolo a lista de proyectos aceptados");
 
     // Añadir contenido al pool de proyectos en curso
-    poolEnCurso.getRange(poolEnCurso.getLastRow()+1, 1, 1, poolEnCurso.getLastColumn()).setValues([datosProyecto.concat(filaProyectoRow)]);
+    poolEnCurso.getRange(poolEnCurso.getLastRow()+1, 1, 1, poolEnCurso.getLastColumn()).setValues([datosProyecto.concat(filaProj)]);
 
     //Ocupar las franjas en el horario
     let franjasSolicitadas = respuestasDiasToMatrix(opcionesHorasSolicitadas); // Matriz 13*5 de ceros y unos
