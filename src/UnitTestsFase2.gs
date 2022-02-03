@@ -2,17 +2,17 @@
 // Licensed under the EUPL-1.2
 
 function test_proyectoAprobadoPorCREA() {
-  const input = 2;
+  const input = 3;
   proyectoAprobadoPorCREA(input);
 }
 
 function test_proyectoDecisionResponsable() {
   let aprobado = true;
-  const filaRaw = 2;
+  const filaRaw = 3;
   proyectoDecisionResponsable(aprobado, filaRaw);
 }
 
-function test_franjasToText() {
+function test_franjasToText() { //Deprecated
   let input = [ 
     [ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 ],
     [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
@@ -45,7 +45,7 @@ function test_respuestasDiasToMatrix() {
     ["8:30-9:30", "13:30-14:30", "19:30-20:30"],
     ["13:30-14:30"],
     ["8:30-9:30"],
-    ["Martes no", "8:30-9:30", "9:30-10:30"], // Aquí los noes tan solo se ignoran, el resto va igual
+    ["Jueves no", "8:30-9:30", "9:30-10:30"], // Aquí los noes tan solo se ignoran, el resto va igual
     ["8:30-9:30", "14:30-15:30"]
   ]
 
