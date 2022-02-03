@@ -24,13 +24,25 @@ function ComprobarSocioCREA(numeroMat)
 }
 
 function generarArrayCalendario() { // Genera un array de ceros de 5días * [13]franjas
-  let array = new Array(5); // Días de la semana
-  let franjasDia = []; // Franjas en un día
-  for (let i in listaValuesHorario) {
-    franjasDia.push(0);
-  }
-  for (let i = 0; i < array.length; ++i) {
-    array[i] = Object.assign([], franjasDia); // Esto para que no copie las referencias y cada fila luego se pueda mutar por separado
-  }
-  return array;
+  /*let array = new Array(5).fill(0); // Días de la semana
+  let matriz = []; // Franjas en un día
+  for (let i = 0; i < 13; i++) {
+    matriz.push(array);
+  }*/
+  let matriz = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ]
+  return matriz;
 }

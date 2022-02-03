@@ -79,18 +79,19 @@ function TestComprobarSociosCREA()
   return true;
 }
 
-function test()
-{
-  console.log("Hola ☺");
-}
-
 function test_gen_generarArrayCalendario() {
   let mtx = generarArrayCalendario();
   console.log(mtx);
-  mtx[0][10] = 8;
-  for (let i = 0; i < mtx.length; ++i) {
+  mtx[0][4] = 8;
+  for (let i = 0; i < mtx[0].length; ++i) {
     mtx[i][i] = 69;
   }
   console.log(mtx);
   return;
+}
+
+
+function test()
+{
+  console.log(horarios.getRange(2,4,13,5).getValues());
 }
