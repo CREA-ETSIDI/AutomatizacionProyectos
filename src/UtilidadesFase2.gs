@@ -6,7 +6,7 @@ function horariosParser(horariosSelected) {
   // Si se ha elegido que ese día "no", devuelve undefined (se ignoran otras posibles respuestas)
   let splitList = horariosSelected.split(', ');
 
-  if (splitList[0].indexOf("no") != -1){ // Es -1 cuando no la encuentra
+  if (splitList[0].indexOf("no") > -1){ // Es -1 cuando no la encuentra
     return;
   }
   return splitList;
@@ -20,11 +20,11 @@ function respuestasDiasToMatrix(diasStringList) {
 
   for (dayN in diasStringList) { // Para cada dia dentro del array de entrada, analizaremos que horas se han cogido
     let diaList = diasStringList[dayN]; // Array de respuestas del día dayN
-    for (i in diaList) { // Para cada elemento, supondremos que una string como "9:30-10:30", buscamos donde carajo hay que meterlo en matriz
+    for (i in diaList) { // Para cada elemento, supondremos que una string como "9:30-10:30", buscamos donde hay que meterlo en matriz
       let franjaToCheck = diaList[i]; // Esta es la string con la franja en específico
       let index = listaValuesHorario.indexOf(franjaToCheck); // Para cada string de estas, obtenemos el índice que le toca. Véase listaValuesHorario en CENSURADO.gs
       if (index != -1) { // O sea, si resulta que es -1 es que no lo encuentra, pues: si lo encuentra...
-        matriz[dayN][index] = 1; // Mete en el array del día de matriz, en la posición index, eso, creo que no me explico
+        matriz[index][dayN] = 1; // Mete en el array del día de matriz, en la posición index, eso, creo que no me explico
       }
     }
   }
@@ -55,11 +55,11 @@ function franjasToText(franja) {
   /* Convierte un array de franjas en un texto legible que indica cuáles hay por día */
   let tmpTxt = "";
   let escogidoAlguno = false;
-  for (let dayN in franja) {
+  for (let dayN in franja[0]) {
     escogidoAlguno = false;
     tmpTxt += listaValuesDias[dayN] + ": ";
     for (let franjaN in franja[dayN]) {
-      if (franja[dayN][franjaN]) {
+      if (franja[franjaN][dayN]) {
         escogidoAlguno = true;
         tmpTxt += listaValuesHorario[franjaN] + ", ";
       }
@@ -87,4 +87,19 @@ function addFranjasToCalendarioSheet(matrizFranjas, proyID) {
       }
     }
   }
+}
+
+function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosProyecto){
+  // Ahora debe informarse al líder del proyecto de cuáles se han aceptado y cuáles denegado (¿hacer func aparate?)
+  let tmpCorreoProcesamientoSolicitudes = "Hola, te informamos de los horarios que se pueden reservar y cuáles no de su previa solicitud: \nFranjas reservadas:\n";
+  tmpCorreoProcesamientoSolicitudes += franjasToText(franjasAceptadas);
+  tmpCorreoProcesamientoSolicitudes += "\nDebido al protocolo de prevención covid, no podemos dejarte las siguientes franjas:\n";
+  tmpCorreoProcesamientoSolicitudes += franjasToText(franjasDenegadas);
+  tmpCorreoProcesamientoSolicitudes += automagicoSignature;
+  //console.log(tmpCorreoProcesamientoSolicitudes); // Yujuuuu, parece que funciona
+
+  GmailApp.sendEmail(datosProyecto[proyIndex.responsable.email],"Confirmar horario disponible para su proyecto " + datosProyecto[proyIndex.titulo], tmpCorreoProcesamientoSolicitudes);
+
+  console.info("Se ha enviado un correo a " + datosProyecto[proyIndex.responsable.nombre] + " para ver si acepta los horarios ")
+
 }
