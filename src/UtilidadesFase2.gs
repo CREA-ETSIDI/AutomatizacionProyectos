@@ -58,7 +58,7 @@ function franjasToText(franja) {
   for (let dayN in franja[0]) {
     escogidoAlguno = false;
     tmpTxt += listaValuesDias[dayN] + ": ";
-    for (let franjaN in franja[dayN]) {
+    for (let franjaN in franja) {
       if (franja[franjaN][dayN]) {
         escogidoAlguno = true;
         tmpTxt += listaValuesHorario[franjaN] + ", ";
@@ -90,16 +90,14 @@ function addFranjasToCalendarioSheet(matrizFranjas, proyID) {
 }
 
 function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosProyecto){
-  // Ahora debe informarse al líder del proyecto de cuáles se han aceptado y cuáles denegado (¿hacer func aparate?)
-  let tmpCorreoProcesamientoSolicitudes = "Hola, te informamos de los horarios que se pueden reservar y cuáles no de su previa solicitud: \nFranjas reservadas:\n";
-  tmpCorreoProcesamientoSolicitudes += franjasToText(franjasAceptadas);
-  tmpCorreoProcesamientoSolicitudes += "\nDebido al protocolo de prevención covid, no podemos dejarte las siguientes franjas:\n";
-  tmpCorreoProcesamientoSolicitudes += franjasToText(franjasDenegadas);
-  tmpCorreoProcesamientoSolicitudes += automagicoSignature;
-  //console.log(tmpCorreoProcesamientoSolicitudes); // Yujuuuu, parece que funciona
+  // Ahora debe informarse al líder del proyecto de cuáles se han aceptado y cuáles denegado
+  let tmpCorreoProcesamientoSolicitudes = "Hola, te informamos de los horarios que se pueden reservar y cuáles no de su previa solicitud: \nFranjas reservadas:\n"
+  + franjasToText(franjasAceptadas)
+  +"\nDebido al protocolo de prevención covid, no podemos dejarte las siguientes franjas:\n"
+  + franjasToText(franjasDenegadas)
+  + automagicoSignature;
 
   GmailApp.sendEmail(datosProyecto[proyIndex.responsable.email],"Confirmar horario disponible para su proyecto " + datosProyecto[proyIndex.titulo], tmpCorreoProcesamientoSolicitudes);
 
   console.info("Se ha enviado un correo a " + datosProyecto[proyIndex.responsable.nombre] + " para ver si acepta los horarios ")
-
 }

@@ -12,14 +12,24 @@ function test_proyectoDecisionResponsable() {
   proyectoDecisionResponsable(aprobado, filaRaw);
 }
 
-function test_franjasToText() { //Deprecated
-  let input = [ 
-    [ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 ],
-    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [ 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0 ] ];
-  let leOutput = franjasToText(input);
+function test_franjasToText() {
+  let ejemploMatrizFranjas = [
+  // L  M  X  J  V
+    [1, 0, 0, 0, 1], // 8:30-9:30
+    [1, 0, 0, 0, 1], // 9:30-10:30
+    [1, 0, 0, 0, 1], // 10:30-11:30
+    [1, 0, 0, 0, 1], // 11:30-12:30
+    [1, 0, 1, 0, 1], // 12:30-13:30
+    [1, 0, 0, 0, 1], // 13:30-14:30
+    [1, 0, 0, 0, 1], // 14:30-15:30
+    [1, 0, 1, 0, 1], // 15:30-16:30
+    [1, 0, 0, 0, 1], // 16:30-17:30
+    [1, 0, 0, 0, 1], // 17:30-18:30
+    [1, 0, 0, 0, 1], // 18:30-19:30
+    [1, 0, 0, 0, 1], // 19:30-20:30
+    [1, 0, 0, 0, 1]  // 20:30-21:30
+  ];
+  let leOutput = franjasToText(ejemploMatrizFranjas);
   console.log(leOutput);
 }
 

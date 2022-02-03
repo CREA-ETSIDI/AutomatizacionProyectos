@@ -56,6 +56,5 @@ function proyectoDecisionResponsable(esAprobado, filaProyectoRow) {
     //Voto por no hacer nada, pedirle que vuelva a rellenar el form y fin
     return;
   }
-
   return;
 }
