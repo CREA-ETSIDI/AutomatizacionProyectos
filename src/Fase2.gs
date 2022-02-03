@@ -12,7 +12,7 @@ function proyectoAprobadoPorCREA(filaProyectoRaw) { // Como mínimo debe ser 2, 
     horariosParser(datosProyecto[prjIndex.franjasDias.vie]),
   ] // Matriz con las horas seleccionadas en listas de strings
   let franjasSolicitadas = respuestasDiasToMatrix(opcionesHorasSolicitadas); // Matriz 13*5 de ceros y unos
-  let franjasOcupadas    = horarios.getRange(2, 4, 13, 5).getValues(); // Franjas ya ocupadas por otros proyectos
+  let franjasOcupadas    = horarioIDs.getRange(2, 4, 13, 5).getValues(); // Franjas ya ocupadas por otros proyectos
   let [franjasAceptadas, franjasDenegadas]  = getFranjasAceptadasDenegadas(franjasOcupadas, franjasSolicitadas);
   EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosProyecto)
   return;
@@ -37,16 +37,18 @@ function proyectoDecisionResponsable(esAprobado, filaProj) {
 
     //Ocupar las franjas en el horario
     let franjasSolicitadas = respuestasDiasToMatrix(opcionesHorasSolicitadas); // Matriz 13*5 de ceros y unos
-    let franjasOcupadas    = horarios.getRange(2, 4, 13, 5).getValues(); // Franjas ya ocupadas por otros proyectos
+    let franjasOcupadas    = horarioIDs.getRange(2, 4, 13, 5).getValues(); // Franjas ya ocupadas por otros proyectos
     let nuevoHorario = generarArrayCalendario();
 
     for(i in nuevoHorario){
       for(j in nuevoHorario[0])
       {
-        nuevoHorario[i][j] = franjasSolicitadas[i][j] | franjasOcupadas[i][j];
+        // Ocupamos el nuevo horario con los valores de las ocupadas a menos de que sea 0 o vacío (= libre)
+        // en cuyo caso sustituimos por el ID de la solicitada
+        nuevoHorario[i][j] = franjasOcupadas[i][j] ? franjasOcupadas[i][j] : franjasSolicitadas[i][j]*filaProj;
       }
     }
-    horarios.getRange(2,4,13,5).setValues(nuevoHorario);
+    horarioIDs.getRange(2,4,13,5).setValues(nuevoHorario);
     
     // Eliminar viejo contenido del origen de proyectos
     //rangoProyecto.clear(); //WTF?! Por qué?
