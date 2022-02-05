@@ -14,11 +14,11 @@ function proyectoAprobadoPorCREA(filaProyectoRaw) { // Como mínimo debe ser 2, 
   let franjasSolicitadas = respuestasDiasToMatrix(opcionesHorasSolicitadas); // Matriz 13*5 de ceros y unos
   let franjasOcupadas    = horarioIDs.getRange(2, 4, 13, 5).getValues(); // Franjas ya ocupadas por otros proyectos
   let [franjasAceptadas, franjasDenegadas]  = getFranjasAceptadasDenegadas(franjasOcupadas, franjasSolicitadas);
-  EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosProyecto)
+  EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosProyecto, filaProyectoRaw);
   return;
 }
 
-function proyectoDecisionResponsable(esAprobado, filaProj) {
+function proyectoDecisionResponsable(filaProj) {
   let rangoProyecto = responses.getRange(filaProj, 1, 1, responses.getLastColumn())
   let datosProyecto = rangoProyecto.getValues()[0];
   let opcionesHorasSolicitadas = [
@@ -29,34 +29,24 @@ function proyectoDecisionResponsable(esAprobado, filaProj) {
     horariosParser(datosProyecto[prjIndex.franjasDias.vie]),
   ] // Matriz con las horas seleccionadas en listas de strings
 
-  if (esAprobado) {
     console.info("Se ha aceptado el proyecto " + datosProyecto[prjIndex.titulo] + " en fila #" + filaProj + ". Moviendolo a lista de proyectos aceptados");
 
-    // Añadir contenido al pool de proyectos en curso
-    poolEnCurso.getRange(poolEnCurso.getLastRow()+1, 1, 1, poolEnCurso.getLastColumn()).setValues([datosProyecto.concat(filaProj)]);
+  // Añadir contenido al pool de proyectos en curso
+  poolEnCurso.getRange(poolEnCurso.getLastRow()+1, 1, 1, poolEnCurso.getLastColumn()).setValues([datosProyecto.concat(filaProj)]);
 
-    //Ocupar las franjas en el horario
-    let franjasSolicitadas = respuestasDiasToMatrix(opcionesHorasSolicitadas); // Matriz 13*5 de ceros y unos
-    let franjasOcupadas    = horarioIDs.getRange(2, 4, 13, 5).getValues(); // Franjas ya ocupadas por otros proyectos
-    let nuevoHorario = generarArrayCalendario();
+  //Ocupar las franjas en el horario
+  let franjasSolicitadas = respuestasDiasToMatrix(opcionesHorasSolicitadas); // Matriz 13*5 de ceros y unos
+  let franjasOcupadas    = horarioIDs.getRange(2, 4, 13, 5).getValues(); // Franjas ya ocupadas por otros proyectos
+  let nuevoHorario = generarArrayCalendario();
 
-    for(i in nuevoHorario){
-      for(j in nuevoHorario[0])
-      {
-        // Ocupamos el nuevo horario con los valores de las ocupadas a menos de que sea 0 o vacío (= libre)
-        // en cuyo caso sustituimos por el ID de la solicitada
-        nuevoHorario[i][j] = franjasOcupadas[i][j] ? franjasOcupadas[i][j] : franjasSolicitadas[i][j]*filaProj;
-      }
+  for(i in nuevoHorario){
+    for(j in nuevoHorario[0])
+    {
+      // Ocupamos el nuevo horario con los valores de las ocupadas a menos de que sea 0 o vacío (= libre)
+      // en cuyo caso sustituimos por el ID de la solicitada
+      nuevoHorario[i][j] = franjasOcupadas[i][j] ? franjasOcupadas[i][j] : franjasSolicitadas[i][j]*filaProj;
     }
-    horarioIDs.getRange(2,4,13,5).setValues(nuevoHorario);
-    
-    // Eliminar viejo contenido del origen de proyectos
-    //rangoProyecto.clear(); //WTF?! Por qué?
   }
-  else {
-    // Qué hacemos? Lo eliminamos? Sería una forma de saber qué fue de él, pero se perdería la info. ¿Moverlo a una hoja de cancelados con la razón?
-    //Voto por no hacer nada, pedirle que vuelva a rellenar el form y fin
-    return;
-  }
+  horarioIDs.getRange(2,4,13,5).setValues(nuevoHorario);
   return;
 }
