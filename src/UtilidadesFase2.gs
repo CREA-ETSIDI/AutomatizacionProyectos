@@ -77,15 +77,18 @@ function franjasToText(franja) {
   return tmpTxt;
 }
 
-function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosProyecto){
+function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosProyecto, filaProyectoRaw){
   // Ahora debe informarse al líder del proyecto de cuáles se han aceptado y cuáles denegado
-  let tmpCorreoProcesamientoSolicitudes = "Hola, te informamos de los horarios que se pueden reservar y cuáles no de su previa solicitud: \nFranjas reservadas:\n"
+ let cuerpo = HtmlService.createHtmlOutput(("Hola, te informamos de los horarios que se pueden reservar y cuáles no de su previa solicitud: <br>Franjas reservadas:<br>"
   + franjasToText(franjasAceptadas)
-  +"\nDebido al protocolo de prevención covid, no podemos dejarte las siguientes franjas:\n"
+  +"<br>Debido al protocolo de prevención covid, no podemos dejarte las siguientes franjas:<br>"
   + franjasToText(franjasDenegadas)
-  + automagicoSignature;
-
-  GmailApp.sendEmail(datosProyecto[prjIndex.responsable.email],"Confirmar horario disponible para su proyecto " + datosProyecto[prjIndex.titulo], tmpCorreoProcesamientoSolicitudes);
-
+  + '<br><br>Si quieres continuar con el proceso de inscripción del proyecto pulsa <a href="'
+  + queryAprobado(filaProyectoRaw)
+  +'">aquí</a>, de lo contrario, pulsa <a href="'
+  +queryDenegado(filaProyectoRaw)
+  +'">aquí</a>'
+  + automagicoSignature).replace("\n"," <br> <br> ")).getContent();
+  GmailApp.sendEmail(datosProyecto[prjIndex.responsable.email],"Confirmar horario disponible para su proyecto " + datosProyecto[prjIndex.titulo], "", {htmlBody: cuerpo});
   console.info("Se ha enviado un correo a " + datosProyecto[prjIndex.responsable.nombre] + " para ver si acepta los horarios ")
 }
