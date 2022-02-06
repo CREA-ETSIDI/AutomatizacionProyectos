@@ -1,0 +1,54 @@
+function Actualizador() {
+  let diaSemana = Utilities.formatDate(new Date(), "GMT+1","u");
+  let fecha = Utilities.formatDate(new Date(), "GMT+1","yyyy-MM-dd");
+  let hojaOscar = SpreadsheetApp.openById(idHojaOscar)
+  diaSemana = 5;
+  if(diaSemana <= 5){
+    let horario = SpreadsheetApp.openById(idCalendarioNombres).getSheetByName("Horario");
+    let columnaDatos = horario.getRange(2, 3+diaSemana, 13).getValues();
+    Logger.log(columnaDatos);
+    let horasInicio = horario.getRange(2, 1, 13).getDisplayValues();
+    Logger.log(horasInicio);
+    let horasFin = horario.getRange(2, 3, 13).getValues();
+    let textoBase = "";
+    let inRange = false;
+    let writeline = [fecha];
+    for(i in columnaDatos){
+      let textoCelda = columnaDatos[i][0];
+      if(textoCelda != "0"){
+        if(inRange == false){
+          inRange = true;
+          writeline.push(horasInicio[i][0]);
+          writeline.push("-");
+          Logger.log("Patata");
+          textoBase = textoCelda;
+        }
+        else{
+          if(textoCelda != textoBase){
+            writeline.push(horasInicio[i][0]);
+            writeline.push(textoBase);
+            hojaOscar.appendRow(writeline);
+            writeline = [fecha, horasInicio[i][0]];
+            writeline.push("-");
+            textoBase = textoCelda;
+          }
+        }
+      }
+      else{
+        if(inRange){
+        inRange = false;
+        writeline.push(horasInicio[i][0]);
+        writeline.push(textoBase);
+        hojaOscar.appendRow(writeline);
+        writeline = [fecha];
+        }
+      }
+    }
+    if(inRange == true){
+      writeline.push("21:30");
+      writeline.push(textoBase);
+      hojaOscar.appendRow(writeline);
+    }
+
+  }
+}
