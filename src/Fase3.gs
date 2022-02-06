@@ -1,9 +1,11 @@
 // Copyright Club de Robótica y Electrónica 2022.
 // Licensed under the EUPL-1.2
 
-function prjToTimetable(prjRow) {
+function prjToTimetable(filaProj) {
   updateNamedTimetableFromIDsTmtble();
   updateFormTimeQuestions();
+  EnviarMensajeProyectoCreadoResponsable(filaProj);
+  EnviarMensajeProyectoCreadoVocal(filaProj);
 }
 
 function updateNamedTimetableFromIDsTmtble() {
@@ -35,5 +37,18 @@ function updateNamedTimetableFromIDsTmtble() {
 }
 
 function updateFormTimeQuestions() {
+  let form = FormApp.getActiveForm();
+  let timeIDs = ["1078195515", "1480306668", "2587648", "477819459", "1481751245"];
+  let originTimetable  = horarioIDs.getRange(2, 4, 13, 5).getValues();
+  for(i in timeIDs){
+    let pregunta = form.getItemById(timeIDs[i]).asCheckboxItem();
+    let answers = [pregunta.createChoice("Este día no")];
+    for(let j = 0; j < horarioIDs.getLastRow()-2; j++){
+      if(originTimetable[j][i] < 1){
+        answers.push(pregunta.createChoice(GeneradorHora(j+2)));
+      }
+    }
+    pregunta.setChoices(answers);
+  }
   return;
 }
