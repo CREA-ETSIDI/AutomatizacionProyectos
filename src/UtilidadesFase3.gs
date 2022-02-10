@@ -12,5 +12,5 @@ function EnviarMensajeProyectoCreadoResponsable(filaProj){
 function EnviarMensajeProyectoCreadoVocal(filaProj){
   let datosProyecto = responses.getRange(filaProj, 1, 1, responses.getLastColumn()).getValues()[0];
   let mensaje = "Hola " + nombreVocalProyectos + ", El bot aquí presente viene a comentar que el proyecto " + datosProyecto[prjIndex.titulo] + " oficialmente ya ha iniciado.\nEl equipo, integrado por: " + datosProyecto[prjIndex.responsable.nombre] + ", " + datosProyecto[prjIndex.personal.nombres] + " estará trabajando en las siguientes franjas horarias";
-  sendText(vocalProyectosID, mensaje)
+  sendText(vocalProyectosID,scapeChars(mensaje + "\n\n\\[inclusión de lista de franjas horarias aprobadas en el futuro, el rito de la linterna no se hace solo\\]"));
 }
