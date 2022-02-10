@@ -29,11 +29,12 @@ function establecerEstadoProy(filaProj, estado) {
 }
 
 function generarArrayCalendario() { // Genera un array de ceros de 5días * [13]franjas
-  /*let array = new Array(5).fill(0); // Días de la semana
+  /*
   let matriz = []; // Franjas en un día
   for (let i = 0; i < 13; i++) {
-    matriz.push(array);
-  }*/
+    matriz.push(new Array(5).fill(0)); // Días de la semana
+  }
+  */
   let matriz = [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
