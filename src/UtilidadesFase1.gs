@@ -61,7 +61,7 @@ function EnviarEmailErrorMatriculas(email, nombre, failed)
 function EnviarEmailDiscrepanciaMatriculas(email, nombre, n_integrantes, n_matriculas)
 {
   text = "Hola " + nombre + ".\nTe escribimos en relación al formulario de proyectos que has rellenado ya que el número de integrantes que has introducido (" + n_integrantes + ") no coincide con la cantidad de números de matrícula introducidos (" + n_matriculas + ") .\n\nEste correo se ha generado automágicamente, si crees que nuestro bot ha cometido un error, no dudes en ponerte en contacto con uno de nuestros humanos a través de telegram, whatsapp, discord, instagram, twitter o por la ETSIDI. De lo contrario, vuelve a rellenar el formulario introduciendo los datos correctamente, nosotros haremos como si esto no hubiese pasado ;)";
-  GmailApp().sendEmail(email, "Error en las matrículas introducidas", text);
+  GmailApp.sendEmail(email, "Error en las matrículas introducidas", text);
 }
 
 //https://dev.to/huyddo/find-duplicate-or-repeat-elements-in-js-array-3cl3#:~:text=Using%20iteration,the%20array%20contains%20duplicate%20elements.
@@ -93,7 +93,7 @@ function ComprobarSociosCREA(nMats)
 function EnviarEmailMuyPocosInscritos(email, nombre)
 {
   text = "Hola " + nombre + ".\nTe escribimos en relación al formulario de proyectos que has rellenado ya que hemos detectado que menos del 50% de los integrantes están inscritos en el CREA, por lo que el proyecto no puede iniciar.\n\nEste correo se ha generado automágicamente, si crees que nuestro bot ha cometido un error, no dudes en ponerte en contacto con uno de nuestros humanos a través de telegram, whatsapp, discord, instagram, twitter o por la ETSIDI. De lo contrario, inscribios :v";
-  GmailApp().sendEmail(email, "Error en las matrículas introducidas", text);
+  GmailApp.sendEmail(email, "Error en las matrículas introducidas", text);
 }
 
 function EnviarMensajeSolicitudAprobacion(fila, nombre, titulo, descripcion, email)
