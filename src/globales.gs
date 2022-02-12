@@ -5,13 +5,14 @@ try
 }
 catch //De lo contrario, lo crea y lo guarda
 {
+  Logger.log("No existe hoja de cálculo, creando hoja de vertido de respuestas")
   //Robadísimo de: https://developers.google.com/apps-script/reference/forms/destination-type && https://stackoverflow.com/questions/31739653/create-a-google-doc-file-directly-in-a-google-drive-folder
   ss = DriveApp.getFileById(SpreadsheetApp.create(formProyectos.getTitle() + "(respuestas)").getId()); //Crea una nueva hoja de cálculo en la carpeta raíz de drive
   sourceFolder.addFile(ss); //La almacena en la carpeta donde interesa
   DriveApp.getRootFolder().removeFile(ss); //Elimina la que queda en la carpeta raíz
   formProyectos.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId()); //Define esta hoja de cálculo como el destino del formulario de proyectos
   ss = SpreadsheetApp.openById(formProyectos.getDestinationId()); //Nos aseguramos de que la hoja de destino se haya creado correctamente
-  ss.getSheets()[1].setName("En Curso").getRange(1,1,1,ss.getSheets()[0].getLastColumn() + 2).setValues(ss.getSheets()[0].getRange(1,1,1,ss.getSheets()[0].getLastColumn()).getValues().concat(["ID", "Finalizado"]));
+  ss.getSheets()[1].setName("En Curso").getRange(1,1,1,ss.getSheets()[0].getLastColumn() + 2).setValues([ss.getSheets()[0].getRange(1,1,1,ss.getSheets()[0].getLastColumn()).getValues()[0].concat(["ID", "Finalizado"])]);
 }
 const responses = ss.getSheetByName("Form Responses 1"); //Guarda la hoja de cálculo destino del form
 
@@ -23,22 +24,26 @@ const poolEnCurso = ss.getSheetByName("En Curso");
 
 if(ss.getSheetByName("Horario") == null) //Si no existe la hoja "En curso"
 {
-  let temp = ss.insertSheet(2).setName("Horario").deleteColumns(9,18); //La crea y da el formato correcto
+  let temp = ss.insertSheet(2).setName("Horario");
+  temp.deleteColumns(9,18); //La crea y da el formato correcto
   temp.deleteRows(15, 986);
-  let valueMatrix = ["De", "", "A"];
+  let valueMatrix = [["De", "", "A"]];
   for(let i = 8; i < 21; i++)
   {
     valueMatrix.push([String(i) + ":30", "-", String(i+1) + ":30"]);
   }
-  temp.getRange(1,1,14,3).setValues(valueMatrix).getSheet().getRange(1,4,1,5).setValues([["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]]);
+  Logger.log(valueMatrix);
+  temp.getRange(1,1,14,3).setValues(valueMatrix);
+  temp.getRange(1,4,1,5).setValues([["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]]);
 }
-const horarios = ss.getSheetByName("En Curso").setColumnWidth(1,50).setColumnWidth(2,25).setColumnWidth(3,45).setColumnWidths(4,5,320).setRowHeights(1,14,50);
+const horarios = ss.getSheetByName("Horario").setColumnWidth(1,50).setColumnWidth(2,25).setColumnWidth(3,45).setColumnWidths(4,5,320).setRowHeights(1,14,50);
 
 if(ss.getSheetByName("HorarioIDs") == null) //Si no existe la hoja "En curso"
 {
-  let temp = ss.insertSheet(3).setName("HorarioIDs").deleteColumns(9,18); //La crea y da el formato correcto
+  let temp = ss.insertSheet(3).setName("HorarioIDs");
+  temp.deleteColumns(9,18); //La crea y da el formato correcto
   temp.deleteRows(15, 986);
-  let valueMatrix = ["De", "", "A"];
+  let valueMatrix = [["De", "", "A"]];
   for(let i = 8; i < 21; i++)
   {
     valueMatrix.push([String(i) + ":30", "-", String(i+1) + ":30"]);
@@ -143,10 +148,8 @@ const dniIndex = 7;
 const movilIndex = 8;
 
 // Texto para firmar correo como automágico
-const automagicoSignature = "\
---\n\
-Este correo se ha generado automágicamente a partir de sus datos introducidos en el formulario.\n\
+const automagicoSignature = "\n --Este correo se ha generado automágicamente a partir de sus datos introducidos en el formulario.\n\
 Si crees que nuestro bot ha cometido un error, no dudes en ponerte en contacto con uno de nuestros\
  humanos a través de telegram, whatsapp, discord, instagram, twitter o por la ETSIDI.\
 \n\n\
-Atentamente, CREABot - Tu bot de poca confianza";
+Atentamente, CREABot 🤖 - Tu bot de poca confianza";
