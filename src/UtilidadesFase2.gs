@@ -55,23 +55,28 @@ function franjasToText(franja) {
   let tmpTxt = "";
   let escogidoAlguno = false;
   for (let dayN in franja[0]) {
+    // Variable que almacena si para un día hay alguna franja escogida
     escogidoAlguno = false;
-    tmpTxt += listaValuesDias[dayN] + ": ";
+
+    // Comprobamos si hay algún día escogido, ya que de eso depende el output
     for (let franjaN in franja) {
       if (franja[franjaN][dayN]) {
         escogidoAlguno = true;
-        tmpTxt += listaValuesHorario[franjaN] + ", ";
+        break;
       }
     }
-    if (!escogidoAlguno) {
-      tmpTxt += "Nada que mostrar";
-    }
-    else {
+
+    if (escogidoAlguno) {
+      tmpTxt += listaValuesDias[dayN] + ": ";
+      for (let franjaN in franja) {
+        if (franja[franjaN][dayN]) {
+          tmpTxt += listaValuesHorario[franjaN] + ", ";
+        }
+      }
       // Eliminamos coma y espacio del final
       tmpTxt = tmpTxt.slice(0, -2);
+      tmpTxt += "<br>";
     }
-    //tmpTxt += "\n";
-    tmpTxt += "<br>";
   }
 
   return tmpTxt;
@@ -80,14 +85,14 @@ function franjasToText(franja) {
 function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosProyecto, filaProyectoRaw){
   // Ahora debe informarse al líder del proyecto de cuáles se han aceptado y cuáles denegado
   let salt = Math.round(5000 * Math.random());
- let cuerpo = HtmlService.createHtmlOutput(("Hola, te informamos de los horarios que se pueden reservar y cuáles no de su previa solicitud: <br>Franjas reservadas:<br>"
+  let cuerpo = HtmlService.createHtmlOutput(("Hola, te informamos de los horarios que se pueden reservar y cuáles no de su previa solicitud: <br>Franjas reservadas:<br>"
   + franjasToText(franjasAceptadas)
   +"<br>Debido al protocolo de prevención covid, no podemos dejarte las siguientes franjas:<br>"
   + franjasToText(franjasDenegadas)
-  + '<br><br>Si quieres continuar con el proceso de inscripción del proyecto pulsa <a href="'
+  +'<br><br>Si quieres continuar con el proceso de inscripción del proyecto pulsa <a href="'
   + queryAprobado(filaProyectoRaw, salt)
   +'">aquí</a>, de lo contrario, pulsa <a href="'
-  +queryDenegado(filaProyectoRaw, salt)
+  + queryDenegado(filaProyectoRaw, salt)
   +'">aquí</a>'
   + automagicoSignature).replace("\n"," <br> <br> ")).getContent();
   GmailApp.sendEmail(datosProyecto[prjIndex.responsable.email],"Confirmar horario disponible para su proyecto " + datosProyecto[prjIndex.titulo], "", {htmlBody: cuerpo});
