@@ -1,3 +1,4 @@
+//Hoja de cálculo de vertido de respuestas
 let ss;
 try
 {
@@ -5,8 +6,8 @@ try
 }
 catch //De lo contrario, lo crea y lo guarda
 {
-  Logger.log("No existe hoja de cálculo, creando hoja de vertido de respuestas")
-  //Robadísimo de: https://developers.google.com/apps-script/reference/forms/destination-type && https://stackoverflow.com/questions/31739653/create-a-google-doc-file-directly-in-a-google-drive-folder
+  MyLog("No existe hoja de cálculo, creando hoja de vertido de respuestas") //Robadísimo de: https://developers.google.com/apps-script/reference/forms/destination-type && https://stackoverflow.com/questions/31739653/create-a-google-doc-file-directly-in-a-google-drive-folder
+
   ss = DriveApp.getFileById(SpreadsheetApp.create(formProyectos.getTitle() + "(respuestas)").getId()); //Crea una nueva hoja de cálculo en la carpeta raíz de drive
   sourceFolder.addFile(ss); //La almacena en la carpeta donde interesa
   DriveApp.getRootFolder().removeFile(ss); //Elimina la que queda en la carpeta raíz
@@ -15,42 +16,34 @@ catch //De lo contrario, lo crea y lo guarda
   ss.getSheets()[1].setName("En Curso").getRange(1,1,1,ss.getSheets()[0].getLastColumn() + 2).setValues([ss.getSheets()[0].getRange(1,1,1,ss.getSheets()[0].getLastColumn()).getValues()[0].concat(["ID", "Finalizado"])]);
 }
 const responses = ss.getSheetByName("Form Responses 1"); //Guarda la hoja de cálculo destino del form
+ss = null; //#Safety
 
-if(ss.getSheetByName("En Curso") == null) //Si no existe la hoja "En curso"
+//Hoja de proyectos en curso
+if(ss.getSheetByName("En Curso") == null)
 {
   ss.insertSheet(1).setName("Depurado").setFrozenRows(1).getRange(1,1,1,ss.getSheets()[0].getLastColumn() + 2).setValues(ss.getSheets()[0].getRange(1,1,1,ss.getSheets()[0].getLastColumn()).getValues().concat(["ID", "Finalizado"])); //La crea y asigna el formato de la columna superior y congela la primera fila
 }
 const poolEnCurso = ss.getSheetByName("En Curso");
 
-if(ss.getSheetByName("Horario") == null) //Si no existe la hoja "En curso"
-{
-  let temp = ss.insertSheet(2).setName("Horario");
-  temp.deleteColumns(9,18); //La crea y da el formato correcto
-  temp.deleteRows(15, 986);
-  let valueMatrix = [["De", "", "A"]];
-  for(let i = 8; i < 21; i++)
-  {
-    valueMatrix.push([String(i) + ":30", "-", String(i+1) + ":30"]);
-  }
-  Logger.log(valueMatrix);
-  temp.getRange(1,1,14,3).setValues(valueMatrix);
-  temp.getRange(1,4,1,5).setValues([["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]]);
-}
-const horarios = ss.getSheetByName("Horario").setColumnWidth(1,50).setColumnWidth(2,25).setColumnWidth(3,45).setColumnWidths(4,5,320).setRowHeights(1,14,50);
 
-if(ss.getSheetByName("HorarioIDs") == null) //Si no existe la hoja "En curso"
+//Hoja de IDs de horario
+if(ss.getSheetByName("HorarioIDs") == null) //Si no existe la hoja "HorarioIDs"
 {
   let temp = ss.insertSheet(3).setName("HorarioIDs");
-  temp.deleteColumns(9,18); //La crea y da el formato correcto
+  temp.deleteColumns(14,13); //La crea y da el formato correcto
   temp.deleteRows(15, 986);
   let valueMatrix = [["De", "", "A"]];
   for(let i = 8; i < 21; i++)
   {
     valueMatrix.push([String(i) + ":30", "-", String(i+1) + ":30"]);
   }
-  temp.getRange(1,1,14,3).setValues(valueMatrix).getSheet().getRange(1,4,1,5).setValues([["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]]);
+  temp.getRange(1,1,14,3).setValues(valueMatrix);
+  for(let i = 0; i < 5; i++){
+    temp.getRange(1,4+2*i,1,2).merge().setValue(["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"][i]);
+  }
+  FormatoHorariosID(temp);
 }
-const horarioIDs  = ss.getSheetByName("HorarioIDs").setColumnWidth(1,40).setColumnWidth(2,11).setColumnWidth(3,40).setColumnWidths(4,5,65).setRowHeights(1,14,25);
+const horarioIDs  = ss.getSheetByName("HorarioIDs").setColumnWidths(1,3,40).setColumnWidth(2,11).setColumnWidths(4,10,32).setRowHeights(1,14,25);
 
 const lastRow = responses.getLastRow(); //Innecesiarísimo, pero creo que me ayudará a dejar el código más limpio
 
@@ -79,12 +72,13 @@ const prjIndex = { // Diccionario con indexes de una fila de proyecto EN EL ARRA
     jue: 16,
     vie: 17
   },
-  estado: 18,
+  estado: 19,
 
   // Nombres deficientes de variable:
   herramientasMaterial: 10,
   herramientas: 11,
-  material: 12
+  material: 12,
+  ID: 19
 };
 
 const prjStatusNumber = {
@@ -137,15 +131,6 @@ const listaValuesDias = [
   "Jueves",
   "Viernes"
 ];
-
-//Inscripccion
-const emailIndex = 2;
-const nombreIndex = 3;
-const apellido1Index = 4;
-const apellido2index = 5;
-const nMatIndex = 6;
-const dniIndex = 7;
-const movilIndex = 8;
 
 // Texto para firmar correo como automágico
 const automagicoSignature = "\n --Este correo se ha generado automágicamente a partir de sus datos introducidos en el formulario.\n\
