@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Copyright Club de Robótica y Electrónica 2022.
 // Licensed under the EUPL-1.2
 
@@ -12,7 +13,6 @@ function isNumber(char)
 
 function ComprobarSocioCREA(numeroMat)
 {
-  let numerosMat = inscripciones.getRange(2, nMatIndex, inscripciones.getLastRow()-1).getValues();
   for(let i = 0; i < numerosMat.length; i++)
   {
     if(numeroMat == numerosMat[i][0])
@@ -133,6 +133,71 @@ function verItems_IDs() {
   let items = form.getItems();
   for (let i in items)
   {
-    Logger.log(i+' '+items[i].getTitle()+': '+items[i].getId());
+    MyLog(i+' '+items[i].getTitle()+': '+items[i].getId());
   }
 }
+
+function CrearActivador(){
+  let hojaRespuestas = SpreadsheetApp.openById(formProyectos.getDestinationId());
+  ScriptApp.newTrigger('updateNamedTimetableFromIDsTmtble')
+      .forSpreadsheet(hojaRespuestas)
+      .onOpen()
+      .create();
+}
+
+function EncontradorDeIndices(matriz, elemento){
+  MyLog(matriz);
+  for(i in matriz){
+    MyLog("Elemento visitado: " + String(matriz[i][0]) + ", iterador = " + i);
+    if(matriz[i][0] == elemento){
+      return i;
+    }
+  }
+  return -1;
+}
+
+function MyLog(text){
+  log_file.setContent(log_file.getBlob().getDataAsString() + String(new Date()) + ": " + text + "\n");
+}
+
+function FormatoHorariosID(spreadsheet) {
+  spreadsheet.getRange('A1:M14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, null, null, true, '#000000', SpreadsheetApp.BorderStyle.SOLID);
+  spreadsheet.getRange('D1:M14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, null, true, null, '#000000', SpreadsheetApp.BorderStyle.SOLID);
+  spreadsheet.getRange('A1:C14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('D1:E14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('F1:G14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('H1:I14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('J1:K14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('A1:M14').activate();
+  spreadsheet.getActiveRangeList().setBorder(true, true, true, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_THICK);
+  spreadsheet.getRange('D2:M14').activate();
+  var conditionalFormatRules = spreadsheet.getConditionalFormatRules();
+  conditionalFormatRules.push(SpreadsheetApp.newConditionalFormatRule()
+  .setRanges([spreadsheet.getRange('D2:M14')])
+  .whenCellNotEmpty()
+  .setBackground('#B7E1CD')
+  .build());
+  spreadsheet.setConditionalFormatRules(conditionalFormatRules);
+  conditionalFormatRules = spreadsheet.getConditionalFormatRules();
+  conditionalFormatRules.splice(conditionalFormatRules.length - 1, 1, SpreadsheetApp.newConditionalFormatRule()
+  .setRanges([spreadsheet.getRange('D2:M14')])
+  .setGradientMinpoint('#57BB8A')
+  .setGradientMaxpoint('#FFFFFF')
+  .build());
+  spreadsheet.setConditionalFormatRules(conditionalFormatRules);
+  conditionalFormatRules = spreadsheet.getConditionalFormatRules();
+  conditionalFormatRules.splice(conditionalFormatRules.length - 1, 1, SpreadsheetApp.newConditionalFormatRule()
+  .setRanges([spreadsheet.getRange('D2:M14')])
+  .setGradientMinpoint('#57BB8A')
+  .setGradientMidpointWithValue('#FFD666', SpreadsheetApp.InterpolationType.PERCENTILE, '50')
+  .setGradientMaxpoint('#E67C73')
+  .build());
+  spreadsheet.setConditionalFormatRules(conditionalFormatRules);
+};
