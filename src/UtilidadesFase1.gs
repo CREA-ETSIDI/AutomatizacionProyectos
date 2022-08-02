@@ -28,9 +28,10 @@ function ArrayzarMatriculas(texto)
 function ComprobarValidezMatriculas(nMats)
 {
   let failedMats = [];
+  MyLog(nMats);
   for(let i = 0; i < nMats.length; i++)
   {
-    if(parseInt(nMats[i]) < 50000 || parseInt(nMats[i]) > 60000) //Si el número de matrícula recibido se sale del rango esperado se asume como inválido
+    if((parseInt(nMats[i]) < 50000 || parseInt(nMats[i]) > 60000) && (nMats[i] != "210235")) //Si el número de matrícula recibido se sale del rango esperado se asume como inválido
     {
       failedMats.push(nMats[i]);
     }
@@ -55,17 +56,20 @@ function EnviarEmailErrorMatriculas(email, nombre, failed)
     }
     text = text.slice(0, -2) + "\n\nEste correo se ha generado automágicamente, si crees que nuestro bot ha cometido un error, no dudes en ponerte en contacto con uno de nuestros humanos a través de telegram, whatsapp, discord, instagram, twitter o por la ETSIDI. De lo contrario, vuelve a rellenar el formulario introduciendo los datos correctamente, nosotros haremos como si esto no hubiese pasado ;)";
   }
+  MyLog(text);
   GmailApp.sendEmail(email, "Error en las matrículas introducidas", text);
+  sendText(vocalProyectosID, scapeChars(nombre + " ha intentado inscribir su proyecto pero ha instroducido un número de matrícula que se ha detectado como inválido, habla con el responsable para asegurarte de que sea el caso"));
 }
 
 function EnviarEmailDiscrepanciaMatriculas(email, nombre, n_integrantes, n_matriculas)
 {
   text = "Hola " + nombre + ".\nTe escribimos en relación al formulario de proyectos que has rellenado ya que el número de integrantes que has introducido (" + n_integrantes + ") no coincide con la cantidad de números de matrícula introducidos (" + n_matriculas + ") .\n\nEste correo se ha generado automágicamente, si crees que nuestro bot ha cometido un error, no dudes en ponerte en contacto con uno de nuestros humanos a través de telegram, whatsapp, discord, instagram, twitter o por la ETSIDI. De lo contrario, vuelve a rellenar el formulario introduciendo los datos correctamente, nosotros haremos como si esto no hubiese pasado ;)";
   GmailApp.sendEmail(email, "Error en las matrículas introducidas", text);
+  sendText(vocalProyectosID, scapeChars(nombre + " ha intentado inscribir su proyecto pero ha metido menos números de matrícula que integrantes"));
 }
 
 //https://dev.to/huyddo/find-duplicate-or-repeat-elements-in-js-array-3cl3#:~:text=Using%20iteration,the%20array%20contains%20duplicate%20elements.
-function ComprobarDuplicadosMatriculas(nMats)
+function RemoverDuplicadosMatriculas(nMats)
 {
   for(let i = 0; i < nMats.length; i++)
   {
@@ -94,9 +98,10 @@ function EnviarEmailMuyPocosInscritos(email, nombre)
 {
   text = "Hola " + nombre + ".\nTe escribimos en relación al formulario de proyectos que has rellenado ya que hemos detectado que menos del 50% de los integrantes están inscritos en el CREA, por lo que el proyecto no puede iniciar.\n\nEste correo se ha generado automágicamente, si crees que nuestro bot ha cometido un error, no dudes en ponerte en contacto con uno de nuestros humanos a través de telegram, whatsapp, discord, instagram, twitter o por la ETSIDI. De lo contrario, inscribios :v";
   GmailApp.sendEmail(email, "Error en las matrículas introducidas", text);
+  sendText(vocalProyectosID, scapeChars(nombre + " ha intentado inscribir su proyecto pero menos del 50% están inscritos en el CREA"));
 }
 
-function EnviarMensajeSolicitudAprobacion(fila, nombre, titulo, descripcion, email)
+function EnviarMensajeSolicitudAprobacion(fila, nombre, integrantes, titulo, descripcion, email)
 {
   let botones = {
     'inline_keyboard': [
@@ -109,7 +114,44 @@ function EnviarMensajeSolicitudAprobacion(fila, nombre, titulo, descripcion, ema
       }],
     ]
   };
-  let gag = Math.random()>0.98?" (que por cierto, vaya mierda de nombre xD) ":" ";
-  let texto = "Hola " + nombreVocalProyectos + ", El bot aquí presente viene a comentar que " + nombre + " quiere iniciar un proyecto llamado " + titulo + gag + "que consiste en " + descripcion + ".\nAsí que... Qué dices? Se aprueba?"
+  let gag = Math.random()>0.75?" (que por cierto, vaya mierda de nombre xD) ":" ";
+  let texto = "Hola " + nombreVocalProyectos + ", El bot aquí presente viene a comentar que " + nombre + " quiere iniciar un proyecto llamado " + titulo + gag + "que consiste en " + descripcion + ". Y lo va a hacer junto a " + integrantes + ".\nAsí que... Qué dices? Se aprueba?"
+  MyLog("Enviando")
   sendTextConBotones(vocalProyectosID, texto, botones);
+  MyLog("Enviado")
+}
+
+//Detecta si las matrículas pertenecientes a un array son válidas, de lo contrario se encarga de avisar
+function IsValid(received_n_mats){
+  let failed = ComprobarValidezMatriculas(received_n_mats);
+  if(failed.length > 0)
+  {
+    console.log(failed);
+    EnviarEmailErrorMatriculas(lastResponse[prjIndex.responsable.email], lastResponse[prjIndex.responsable.nombre], failed);
+    responses.getRange(my_Fila, prjIndex.estado + 1).setValue("Error: Matrícula inválida");
+    return false;
+  }
+  return true;
+}
+
+//Detecta si el número de matrículas introducidas coincide con el número de participantes en el proyecto
+function Nmatriculas_igual_a_Nintegrantes(received_n_mats, lastResponse){
+  if(received_n_mats.length != lastResponse[prjIndex.personal.cantidad])
+  {
+    EnviarEmailDiscrepanciaMatriculas(lastResponse[prjIndex.responsable.email], lastResponse[prjIndex.responsable.nombre], lastResponse[prjIndex.personal.cantidad], received_n_mats.length);
+    responses.getRange(my_Fila, prjIndex.estado + 1).setValue("Error: nMats != nIntegrantes");
+    return false;
+  }
+  return true;
+}
+
+//Detecta si más de la mitad de los integrantes están inscritos en el CREA
+function HaySuficientesInscritos(received_n_mats){
+  if(ComprobarSociosCREA(received_n_mats) < 0.5 * received_n_mats.length)
+  {
+    EnviarEmailMuyPocosInscritos(lastResponse[prjIndex.responsable.email], lastResponse[prjIndex.responsable.nombre]);
+    responses.getRange(my_Fila, prjIndex.estado + 1).setValue("Error: Muy pocos inscritos");
+    return false;
+  }
+  return true;
 }
