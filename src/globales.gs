@@ -6,17 +6,15 @@ try
 }
 catch //De lo contrario, lo crea y lo guarda
 {
-  MyLog("No existe hoja de cálculo, creando hoja de vertido de respuestas") //Robadísimo de: https://developers.google.com/apps-script/reference/forms/destination-type && https://stackoverflow.com/questions/31739653/create-a-google-doc-file-directly-in-a-google-drive-folder
-
-  ss = DriveApp.getFileById(SpreadsheetApp.create(formProyectos.getTitle() + "(respuestas)").getId()); //Crea una nueva hoja de cálculo en la carpeta raíz de drive
-  sourceFolder.addFile(ss); //La almacena en la carpeta donde interesa
-  DriveApp.getRootFolder().removeFile(ss); //Elimina la que queda en la carpeta raíz
+  MyLog("No existe hoja de cálculo, creando hoja de vertido de respuestas");
+  //Robadísimo de: https://developers.google.com/apps-script/reference/forms/destination-type && https://stackoverflow.com/questions/31739653/create-a-google-doc-file-directly-in-a-google-drive-folder
+  ss = DriveApp.getFileById(SpreadsheetApp.create(formProyectos.getTitle() + "(respuestas)").getId()).moveTo(sourceFolder); //Crea una nueva hoja de cálculo en la carpeta raíz de drive
+  formProyectos.removeDestination();
   formProyectos.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId()); //Define esta hoja de cálculo como el destino del formulario de proyectos
   ss = SpreadsheetApp.openById(formProyectos.getDestinationId()); //Nos aseguramos de que la hoja de destino se haya creado correctamente
   ss.getSheets()[1].setName("En Curso").getRange(1,1,1,ss.getSheets()[0].getLastColumn() + 2).setValues([ss.getSheets()[0].getRange(1,1,1,ss.getSheets()[0].getLastColumn()).getValues()[0].concat(["ID", "Finalizado"])]);
 }
 const responses = ss.getSheetByName("Form Responses 1"); //Guarda la hoja de cálculo destino del form
-ss = null; //#Safety
 
 //Hoja de proyectos en curso
 if(ss.getSheetByName("En Curso") == null)
@@ -44,6 +42,7 @@ if(ss.getSheetByName("HorarioIDs") == null) //Si no existe la hoja "HorarioIDs"
   FormatoHorariosID(temp);
 }
 const horarioIDs  = ss.getSheetByName("HorarioIDs").setColumnWidths(1,3,40).setColumnWidth(2,11).setColumnWidths(4,10,32).setRowHeights(1,14,25);
+ss = null; //#Safety
 
 const lastRow = responses.getLastRow(); //Innecesiarísimo, pero creo que me ayudará a dejar el código más limpio
 
