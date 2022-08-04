@@ -35,7 +35,7 @@ function generarArrayCalendario() { // Genera un array de ceros de 5días * [13]
     matriz.push(new Array(5).fill(0)); // Días de la semana
   }
   */
-  let matriz = [
+  /*let matriz = [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -49,7 +49,8 @@ function generarArrayCalendario() { // Genera un array de ceros de 5días * [13]
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
-  ]
+  ]*/
+  let matriz = new Array(13).fill(new Array(5).fill(0));
   return matriz;
 }
 
@@ -201,3 +202,7 @@ function FormatoHorariosID(spreadsheet) {
   .build());
   spreadsheet.setConditionalFormatRules(conditionalFormatRules);
 };
+
+function isEqual(a, b){
+  return JSON.stringify(a) == JSON.stringify(b);
+}
