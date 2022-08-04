@@ -14,8 +14,8 @@ function horariosParser(horariosSelected) {
 
 function respuestasDiasToMatrix(diasStringList) {
   /* Convierte una lista de listas por cada día con las horas en las que se quiere acceder */ 
-  /* Input: supuestamente un array con 5 arrays por cada día que tienen las horas, en strings, que se han seleccionado
-  Output: supuestamente una matriz 5*13 que indica con trues que intervalos han sido seleccionados */
+  /* Input: Un array con 5 arrays por cada día que tienen las horas, en strings, que se han seleccionado
+  Output: Una matriz 5*13 que indica con trues que intervalos han sido seleccionados */
   let matriz = generarArrayCalendario();
 
   for (dayN in diasStringList) { // Para cada dia dentro del array de entrada, analizaremos que horas se han cogido
@@ -38,7 +38,7 @@ function getFranjasAceptadasDenegadas(calendario, propuesta) {
   let denegadas = generarArrayCalendario();
   for (let listaDiaN in calendario) {
     for (let horaDiaN in calendario[listaDiaN]) {
-      if(calendario[listaDiaN][horaDiaN]) { // Este check es el que necesito ???
+      if(String(calendario[listaDiaN][horaDiaN]).indexOf("&" > -1)) { // Este check es el que necesito ???
         denegadas[listaDiaN][horaDiaN] = propuesta[listaDiaN][horaDiaN]; // Un poco de lógica short-circuit aquí
       }
       else {
@@ -98,3 +98,16 @@ function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosPr
   GmailApp.sendEmail(datosProyecto[prjIndex.responsable.email],"Confirmar horario disponible para su proyecto " + datosProyecto[prjIndex.titulo], "", {htmlBody: cuerpo});
   console.info("Se ha enviado un correo a " + datosProyecto[prjIndex.responsable.nombre] + " para ver si acepta los horarios ")
 }
+
+/*function getFranjasDisponibles(){
+  let raw = horarioIDs.getRange(2, 4, 13, 10).getValues();
+  let output = new Array(13).fill(new Array(5));
+  Logger.log(raw[0][0]=='');
+  for(let x = 0; x < 5; x++){
+    for(let y = 0; y < 13; y++){
+      output[y][x] = raw[y][2*x]=='' && raw[y][2*x + 1]=='';
+    }
+  }
+  Logger.log(output);
+  return output;
+}*/
