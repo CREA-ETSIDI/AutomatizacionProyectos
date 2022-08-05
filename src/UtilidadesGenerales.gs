@@ -1,129 +1,208 @@
+// @ts-nocheck
 // Copyright Club de Robótica y Electrónica 2022.
 // Licensed under the EUPL-1.2
 
-function StartUnitTesting() {
-  let unitsToTest = [
-    TestArrayzarMatriculas,
-    TestComprobarSocioCREA,
-    TestComprobarDuplicadosMatriculas,
-    Test_horariosParser,
-    Test_respuestasDiasToMatrix
-  ]; //Declaramos un array con las funciones que testean automáticamente que las unidades funcionen correctamente
-  let pass = 0;
-  unitsToTest.forEach(function(element, index){ //Recorre el vector de funciones y comprueba que todo funcione
-    try{
-      if(element())
-      {
-        pass++;
-        console.log("Superados: " + pass + "/" + unitsToTest.length); //En caso de que las unidades se ejecuten satisfactoriamente, se indica por consola junto al número de tests aprobados
-      }
-      else
-      {
-        console.log("Test #" + index + 1 + " Fallido"); //En caso de que alguna unidad se ejecute incorrectamente, se indica por consola su índice
-      }
-    }
-    catch{
-      console.log("Test #" + index + 1 + " Fallido catastróficamente"); //En caso de que alguna unidad se lance una excepción, se indica por consola su índice
-    }
-  });
-  if(pass == unitsToTest.length)
-  {
-    console.log("Tests superados exitosamente"); //YAAAAY
-  }
-}
-
-///////////
-//Fase #1//
-///////////
-
-function TestArrayzarMatriculas()
+function isNumber(char)
 {
-  let textos = [
-    "12345, 67890, 13579, 24680",
-    "12345,67890,13579,24680",
-    "12345-67890-13579-24680",
-    "12345 67890 13579 24680"
-  ]
-
-  for(let i = 0; i < textos.length; i++)
+  if(char >= '0' && char <= '9')
   {
-    if(JSON.stringify(ArrayzarMatriculas(textos[i])) != JSON.stringify(["12345", "67890", "13579", "24680"])) //Compara que las matrículas arrayzadas coincidan con el resultado esperado
-    {
-      return false;
-    }
+    return true;
   }
-  return true;
+  return false;
 }
 
-function TestComprobarDuplicadosMatriculas()
+function ComprobarSocioCREA(numeroMat)
 {
-  let matriculas = [
-    ["12345", "67890", "12345", "13579", "24680"],
-    ["12345", "67890", "13579", "24680", "12345"],
-    ["12345", "67890", "13579", "24680", "24680"],
-    ["12345", "12345", "67890", "13579", "24680"]
-  ];
-  for(let i = 0; i < matriculas.length; i++)
+  for(let i = 0; i < numerosMat.length; i++)
   {
-    if(JSON.stringify(RemoverDuplicadosMatriculas(matriculas[i])) != JSON.stringify(["12345", "67890", "13579", "24680"]))
+    if(numeroMat == numerosMat[i][0])
     {
-      return false;
+      return i + 2;
     }
   }
-  return true;
+  return false;
 }
 
-function TestComprobarSocioCREA()
-{
-  for(let i = 0; i < n_mats.length; i++)
-  {
-    if(ComprobarSocioCREA(n_mats[i]) != i_mats[i]) //Comprueba que los números de matrícula almacenados en n_mats coincidan con sus índices o que devuelvan "false" si el número no está inscrito
-    {
-      return false;
+function establecerEstadoProy(filaProj, estado) {
+  responses.getRange(filaProj, prjIndex.estado +1).setValue(prjStatusTxt[estado]);
+  return;
+}
+
+function generarArrayCalendario() { // Genera un array de ceros de 5días * [13]franjas
+  /*
+  let matriz = []; // Franjas en un día
+  for (let i = 0; i < 13; i++) {
+    matriz.push(new Array(5).fill(0)); // Días de la semana
+  }
+  */
+  /*let matriz = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+  ]*/
+  let matriz = new Array(13).fill(new Array(5).fill(0));
+  return matriz;
+}
+
+//Funciones básicas Telegram
+function sendText(id, mensaje){
+  var data = {
+    method: 'post',
+    payload: {
+      method: 'sendMessage',
+      chat_id: String(id),
+      text: mensaje,
+      parse_mode: 'MarkdownV2'
     }
   }
-  return true;
+  let nuevomensaje = UrlFetchApp.fetch(telegramUrl + '/', data);
+  return nuevomensaje;
 }
 
-///////////
-//Fase #2//
-///////////
-
-function Test_horariosParser() {
-  const input = "10:30-11:30, 11:30-12:30, 12:30-13:30";
-  const expected_output = ["10:30-11:30", "11:30-12:30", "12:30-13:30"];
-  let output = horariosParser(input);
-  return isEqual(output, expected_output);
+function sendTextConBotones(id, mensaje, botones){
+  botones = JSON.stringify(botones);
+  var data = {
+    method: 'post',
+    payload: {
+      method: 'sendMessage',
+      chat_id: String(id),
+      text: mensaje,
+      reply_markup: botones
+    }
+  }
+  let nuevomensaje = UrlFetchApp.fetch(telegramUrl + '/', data);
+  return nuevomensaje;
 }
 
-function Test_respuestasDiasToMatrix() {
-  const input = [
-    ["8:30-9:30", "13:30-14:30", "19:30-20:30"],
-    ["13:30-14:30"],
-    ["8:30-9:30"],
-    [null],
-    ["8:30-9:30", "14:30-15:30"]
-  ];
+function editText(mychat_id, mymessage_id, mensaje){
+  var data = {
+    method: 'post',
+    payload: {
+      method: 'editMessageText',
+      chat_id: String(mychat_id),
+      message_id: String(mymessage_id),
+      text: mensaje
+    }
+  }
+  return nuevomensaje = UrlFetchApp.fetch(telegramUrl + '/', data);
+}
 
-  const expected_output = [
-    [ 1, 0, 1, 0, 1 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 1, 1, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 1 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ],
-    [ 1, 0, 0, 0, 0 ],
-    [ 0, 0, 0, 0, 0 ]
-  ];
+function editTextConBotones(mychat_id, mymessage_id, mensaje, botones){
+  botones = JSON.stringify(botones);
+  var data = {
+    method: 'post',
+    payload: {
+      method: 'editMessageText',
+      chat_id: String(mychat_id),
+      message_id: String(mymessage_id),
+      text: mensaje,
+      reply_markup: botones
+    }
+  }
+  return nuevomensaje = UrlFetchApp.fetch(telegramUrl + '/', data);
+}
 
-  let parsedOutput = [];
+function scapeChars(text){
+  let caracteresProhibidos = ['>', '#', '+', '-', '=', '{', '}', '.', ',', '!'] //No se incluyen los caracteres * _ ~ ` [] () ya que se usan en el markdown
+  //let caracteresProhibidos = ['*', '_', '~', "`", '[', ']', '(', ')', '#', '+', '-', '=', '{', '}', '.', ',', '!'] //No se incluyen el caracter > ya que se usan en el HTML
+  for(let i = 0; i < caracteresProhibidos.length; i++)
+  {
+    let nextCharBase = 0;
+    let nextCharIndex = text.slice(nextCharBase).indexOf(caracteresProhibidos[i]);
+    while(nextCharIndex > -1 && nextCharIndex > nextCharBase)
+    {
+      text = text.slice(0, nextCharIndex) + "\\" +  text.slice(nextCharIndex); //Son 2 barras porque una es el scape de la anterior
+      nextCharBase = nextCharIndex + 3;
+      nextCharIndex = text.slice(nextCharBase).indexOf(caracteresProhibidos[i]) + nextCharBase; //Al hacer la suma, si el index es  -1, entonces nextCharIndex < nextCharBase
+    }
+  }
+  return text;
+}
 
-  parsedOutput = respuestasDiasToMatrix(input);
+function verItems_IDs() {
+  let form = FormApp.getActiveForm();
+  let items = form.getItems();
+  for (let i in items)
+  {
+    MyLog(i+' '+items[i].getTitle()+': '+items[i].getId());
+  }
+}
 
-  return isEqual(parsedOutput, expected_output);
+function CrearActivador(){
+  let hojaRespuestas = SpreadsheetApp.openById(formProyectos.getDestinationId());
+  ScriptApp.newTrigger('updateNamedTimetableFromIDsTmtble')
+      .forSpreadsheet(hojaRespuestas)
+      .onOpen()
+      .create();
+}
+
+function EncontradorDeIndices(matriz, elemento){
+  MyLog(matriz);
+  for(i in matriz){
+    MyLog("Elemento visitado: " + String(matriz[i][0]) + ", iterador = " + i);
+    if(matriz[i][0] == elemento){
+      return i;
+    }
+  }
+  return -1;
+}
+
+function MyLog(text){
+  log_file.setContent(log_file.getBlob().getDataAsString() + String(new Date()) + ": " + text + "\n");
+}
+
+function FormatoHorariosID(spreadsheet) {
+  spreadsheet.getRange('A1:M14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, null, null, true, '#000000', SpreadsheetApp.BorderStyle.SOLID);
+  spreadsheet.getRange('D1:M14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, null, true, null, '#000000', SpreadsheetApp.BorderStyle.SOLID);
+  spreadsheet.getRange('A1:C14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('D1:E14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('F1:G14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('H1:I14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('J1:K14').activate();
+  spreadsheet.getActiveRangeList().setBorder(null, null, null, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  spreadsheet.getRange('A1:M14').activate();
+  spreadsheet.getActiveRangeList().setBorder(true, true, true, true, null, null, '#000000', SpreadsheetApp.BorderStyle.SOLID_THICK);
+  spreadsheet.getRange('D2:M14').activate();
+  var conditionalFormatRules = spreadsheet.getConditionalFormatRules();
+  conditionalFormatRules.push(SpreadsheetApp.newConditionalFormatRule()
+  .setRanges([spreadsheet.getRange('D2:M14')])
+  .whenCellNotEmpty()
+  .setBackground('#B7E1CD')
+  .build());
+  spreadsheet.setConditionalFormatRules(conditionalFormatRules);
+  conditionalFormatRules = spreadsheet.getConditionalFormatRules();
+  conditionalFormatRules.splice(conditionalFormatRules.length - 1, 1, SpreadsheetApp.newConditionalFormatRule()
+  .setRanges([spreadsheet.getRange('D2:M14')])
+  .setGradientMinpoint('#57BB8A')
+  .setGradientMaxpoint('#FFFFFF')
+  .build());
+  spreadsheet.setConditionalFormatRules(conditionalFormatRules);
+  conditionalFormatRules = spreadsheet.getConditionalFormatRules();
+  conditionalFormatRules.splice(conditionalFormatRules.length - 1, 1, SpreadsheetApp.newConditionalFormatRule()
+  .setRanges([spreadsheet.getRange('D2:M14')])
+  .setGradientMinpoint('#57BB8A')
+  .setGradientMidpointWithValue('#FFD666', SpreadsheetApp.InterpolationType.PERCENTILE, '50')
+  .setGradientMaxpoint('#E67C73')
+  .build());
+  spreadsheet.setConditionalFormatRules(conditionalFormatRules);
+};
+
+function isEqual(a, b){
+  return JSON.stringify(a) == JSON.stringify(b);
 }
