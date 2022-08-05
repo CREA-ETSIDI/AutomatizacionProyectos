@@ -4,8 +4,10 @@
 function StartUnitTesting() {
   let unitsToTest = [
     TestArrayzarMatriculas,
-    TestComprobarSociosCREA,
-    TestComprobarDuplicadosMatriculas
+    TestComprobarSocioCREA,
+    TestComprobarDuplicadosMatriculas,
+    Test_horariosParser,
+    Test_respuestasDiasToMatrix
   ]; //Declaramos un array con las funciones que testean automáticamente que las unidades funcionen correctamente
   let pass = 0;
   unitsToTest.forEach(function(element, index){ //Recorre el vector de funciones y comprueba que todo funcione
@@ -13,22 +15,26 @@ function StartUnitTesting() {
       if(element())
       {
         pass++;
-        console.log("Passed: " + pass + "/" + unitsToTest.length); //En caso de que las unidades se ejecuten satisfactoriamente, se indica por consola junto al número de tests aprobados
+        console.log("Superados: " + pass + "/" + unitsToTest.length); //En caso de que las unidades se ejecuten satisfactoriamente, se indica por consola junto al número de tests aprobados
       }
       else
       {
-        console.log("Failed " + index); //En caso de que alguna unidad se ejecute incorrectamente, se indica por consola su índice
+        console.log("Test #" + index + 1 + " Fallido"); //En caso de que alguna unidad se ejecute incorrectamente, se indica por consola su índice
       }
     }
     catch{
-      console.log("Failed catastrophically " + index); //En caso de que alguna unidad se lance una excepción, se indica por consola su índice
+      console.log("Test #" + index + 1 + " Fallido catastróficamente"); //En caso de que alguna unidad se lance una excepción, se indica por consola su índice
     }
   });
   if(pass == unitsToTest.length)
   {
-    console.log("All test passed"); //YAAAAY
+    console.log("Tests superados exitosamente"); //YAAAAY
   }
 }
+
+///////////
+//Fase #1//
+///////////
 
 function TestArrayzarMatriculas()
 {
@@ -59,7 +65,7 @@ function TestComprobarDuplicadosMatriculas()
   ];
   for(let i = 0; i < matriculas.length; i++)
   {
-    if(JSON.stringify(ComprobarDuplicadosMatriculas(matriculas[i])) != JSON.stringify(["12345", "67890", "13579", "24680"]))
+    if(JSON.stringify(RemoverDuplicadosMatriculas(matriculas[i])) != JSON.stringify(["12345", "67890", "13579", "24680"]))
     {
       return false;
     }
@@ -67,11 +73,11 @@ function TestComprobarDuplicadosMatriculas()
   return true;
 }
 
-function TestComprobarSociosCREA()
+function TestComprobarSocioCREA()
 {
   for(let i = 0; i < n_mats.length; i++)
   {
-    if(ComprobarSociosCREA(n_mats[i]) != i_mats[i]) //Comprueba que los números de matrícula almacenados en n_mats coincidan con sus índices o que devuelvan "false" si el número no está inscrito
+    if(ComprobarSocioCREA(n_mats[i]) != i_mats[i]) //Comprueba que los números de matrícula almacenados en n_mats coincidan con sus índices o que devuelvan "false" si el número no está inscrito
     {
       return false;
     }
@@ -79,19 +85,45 @@ function TestComprobarSociosCREA()
   return true;
 }
 
-function test_gen_generarArrayCalendario() {
-  let mtx = generarArrayCalendario();
-  console.log(mtx);
-  mtx[0][4] = 8;
-  for (let i = 0; i < mtx[0].length; ++i) {
-    mtx[i][i] = 69;
-  }
-  console.log(mtx);
-  return;
+///////////
+//Fase #2//
+///////////
+
+function Test_horariosParser() {
+  const input = "10:30-11:30, 11:30-12:30, 12:30-13:30";
+  const expected_output = ["10:30-11:30", "11:30-12:30", "12:30-13:30"];
+  let output = horariosParser(input);
+  return isEqual(output, expected_output);
 }
 
+function Test_respuestasDiasToMatrix() {
+  const input = [
+    ["8:30-9:30", "13:30-14:30", "19:30-20:30"],
+    ["13:30-14:30"],
+    ["8:30-9:30"],
+    [null],
+    ["8:30-9:30", "14:30-15:30"]
+  ];
 
-function test()
-{
-  console.log(horarios.getRange(2,4,13,5).getValues());
+  const expected_output = [
+    [ 1, 0, 1, 0, 1 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 1, 1, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 1 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 1, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ]
+  ];
+
+  let parsedOutput = [];
+
+  parsedOutput = respuestasDiasToMatrix(input);
+
+  return isEqual(parsedOutput, expected_output);
 }
