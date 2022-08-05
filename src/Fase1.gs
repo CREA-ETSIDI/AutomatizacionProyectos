@@ -4,7 +4,14 @@
 //La fase #1 consiste en hacer userproofing detectando las posibles respuesta erróneas que se hayan introducido en el formulario
 
 function ComprobacionInicial(){
-  ComprobacionVector(lastRow);
+  try
+  {
+    ComprobacionVector(lastRow);
+  }
+  catch(error)
+  {
+    MyLog("Error en comprobación inicial: " + String(error));
+  }
 }
 
 function ComprobacionVector(my_Fila)
