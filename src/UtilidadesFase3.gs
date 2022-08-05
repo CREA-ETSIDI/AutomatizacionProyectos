@@ -19,6 +19,21 @@ function EnviarMensajeProyectoCreadoResponsable(filaProj){
 
 function EnviarMensajeProyectoCreadoVocal(filaProj){
   let datosProyecto = responses.getRange(filaProj, 1, 1, responses.getLastColumn()).getValues()[0];
-  let mensaje = "Hola " + nombreVocalProyectos + ", El bot aquí presente viene a comentar que el proyecto " + datosProyecto[prjIndex.titulo] + " oficialmente ya ha iniciado.\nEl equipo, integrado por: " + datosProyecto[prjIndex.responsable.nombre] + ", " + datosProyecto[prjIndex.personal.nombres] + " estará trabajando en las siguientes franjas horarias";
-  sendText(vocalProyectosID,scapeChars(mensaje + "\n\n\\[inclusión de lista de franjas horarias aprobadas en el futuro, el rito de la linterna no se hace solo\\]"));
+  let mensaje = "Hola " + nombreVocalProyectos + ", El bot aquí presente viene a comentar que el proyecto " + datosProyecto[prjIndex.titulo] + " con ID: *" + filaProj + "* oficialmente ya ha iniciado.\nEl equipo, integrado por: " + datosProyecto[prjIndex.responsable.nombre] + ", " + datosProyecto[prjIndex.personal.nombres] + " estará trabajando en las siguientes franjas horarias";
+  let franjasHorarias = "\[inclusión de lista de franjas horarias aprobadas en el futuro, el trabajo de automatización industrial\\]";
+
+
+  franjasHorarias = "";
+  let index = parseInt(EncontradorDeIndices(poolEnCurso.getRange(2, prjIndex.ID + 1,lastRow-1).getValues(), filaProj)) + 2;
+  MyLog(index);
+  let dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+  let franjasAprobadas = poolEnCurso.getRange(index, prjIndex.franjasDias.lun + 1, 1, 5).getValues()[0];
+  MyLog(franjasAprobadas);
+  for(let iterador = 0; iterador < 5; iterador++){
+    if(franjasAprobadas[iterador] != ""){
+      franjasHorarias = franjasHorarias + "\n·" + dias[iterador] + ":" + franjasAprobadas[iterador];
+    }
+  }
+  MyLog(scapeChars(mensaje + "\n\n" + franjasHorarias));
+  sendText(vocalProyectosID,scapeChars(mensaje + "\n\n" + franjasHorarias));
 }
