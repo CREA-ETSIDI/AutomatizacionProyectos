@@ -19,7 +19,7 @@ function EnviarMensajeProyectoCreadoResponsable(filaProj){
 
 function EnviarMensajeProyectoCreadoVocal(filaProj){
   let datosProyecto = responses.getRange(filaProj, 1, 1, responses.getLastColumn()).getValues()[0];
-  let mensaje = "Hola " + nombreVocalProyectos + ", El bot aquí presente viene a comentar que el proyecto " + datosProyecto[prjIndex.titulo] + " con ID: *" + filaProj + "* oficialmente ya ha iniciado.\nEl equipo, integrado por: " + datosProyecto[prjIndex.responsable.nombre] + ", " + datosProyecto[prjIndex.personal.nombres] + " estará trabajando en las siguientes franjas horarias";
+  let mensaje = "Hola " + nombreVocalProyectos + ", El bot aquí presente viene a comentar que el proyecto " + scapeCharsHard(datosProyecto[prjIndex.titulo]) + " con ID: *" + filaProj + "* oficialmente ya ha iniciado.\nEl equipo, integrado por: " + scapeCharsHard(datosProyecto[prjIndex.responsable.nombre]) + ", " + scapeCharsHard(datosProyecto[prjIndex.personal.nombres]) + " estará trabajando en las siguientes franjas horarias";
   let franjasHorarias = "\[inclusión de lista de franjas horarias aprobadas en el futuro, el trabajo de automatización industrial\\]";
 
 
@@ -34,6 +34,6 @@ function EnviarMensajeProyectoCreadoVocal(filaProj){
       franjasHorarias = franjasHorarias + "\n·" + dias[iterador] + ":" + franjasAprobadas[iterador];
     }
   }
-  MyLog(scapeChars(mensaje + "\n\n" + franjasHorarias));
+  MyLog("Mensaje a enviar: " + String(scapeChars(mensaje + "\n\n" + franjasHorarias)));
   sendText(vocalProyectosID,scapeChars(mensaje + "\n\n" + franjasHorarias));
 }
