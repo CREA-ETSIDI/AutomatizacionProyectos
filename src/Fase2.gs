@@ -15,7 +15,7 @@ function proyectoAprobadoPorCREA(filaProyectoRaw) { // Como mínimo debe ser 2, 
     horariosParser(datosProyecto[prjIndex.franjasDias.vie]),
   ] // Matriz con las horas seleccionadas en listas de strings
   let franjasSolicitadas = respuestasDiasToMatrix(opcionesHorasSolicitadas); // Matriz 13*5 de ceros y unos
-  let franjasOcupadas    =  // Franjas ya ocupadas por otros proyectos
+  let franjasOcupadas    =  getFranjasOcupadas();// Franjas ya ocupadas por otros proyectos
   let [franjasAceptadas, franjasDenegadas]  = getFranjasAceptadasDenegadas(franjasOcupadas, franjasSolicitadas);
   EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosProyecto, filaProyectoRaw);
   return;
