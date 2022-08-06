@@ -99,15 +99,15 @@ function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosPr
   console.info("Se ha enviado un correo a " + datosProyecto[prjIndex.responsable.nombre] + " para ver si acepta los horarios ")
 }
 
-/*function getFranjasDisponibles(){
+function getFranjasOcupadas(){
   let raw = horarioIDs.getRange(2, 4, 13, 10).getValues();
   let output = new Array(13).fill(new Array(5));
   Logger.log(raw[0][0]=='');
   for(let x = 0; x < 5; x++){
     for(let y = 0; y < 13; y++){
-      output[y][x] = raw[y][2*x]=='' && raw[y][2*x + 1]=='';
+      output[y][x] = !(raw[y][2*x]=='' && raw[y][2*x + 1]=='');
     }
   }
   Logger.log(output);
   return output;
-}*/
+}
