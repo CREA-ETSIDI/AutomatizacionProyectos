@@ -98,7 +98,7 @@ function EnviarEmailMuyPocosInscritos(email, nombre)
 {
   text = "Hola " + nombre + ".\nTe escribimos en relación al formulario de proyectos que has rellenado ya que hemos detectado que menos del 50% de los integrantes están inscritos en el CREA, por lo que el proyecto no puede iniciar.\n\nEste correo se ha generado automágicamente, si crees que nuestro bot ha cometido un error, no dudes en ponerte en contacto con uno de nuestros humanos a través de telegram, whatsapp, discord, instagram, twitter o por la ETSIDI. De lo contrario, inscribios :v";
   GmailApp.sendEmail(email, "Error en las matrículas introducidas", text);
-  sendText(vocalProyectosID, scapeChars(nombre + " ha intentado inscribir su proyecto pero menos del 50% están inscritos en el CREA"));
+  sendText(vocalProyectosID, scapeChars(scapeCharsHard(nombre) + " ha intentado inscribir su proyecto pero menos del 50% están inscritos en el CREA"));
 }
 
 function EnviarMensajeSolicitudAprobacion(fila, nombre, integrantes, titulo, descripcion, email)
@@ -115,7 +115,7 @@ function EnviarMensajeSolicitudAprobacion(fila, nombre, integrantes, titulo, des
     ]
   };
   let gag = Math.random()>0.75?" (que por cierto, vaya mierda de nombre xD) ":" ";
-  let texto = "Hola " + nombreVocalProyectos + ", El bot aquí presente viene a comentar que " + nombre + " quiere iniciar un proyecto llamado " + titulo + gag + "que consiste en " + descripcion + ". Y lo va a hacer junto a " + integrantes + ".\nAsí que... Qué dices? Se aprueba?"
+  let texto = "Hola " + nombreVocalProyectos + ", El bot aquí presente viene a comentar que " + nombre + " quiere iniciar un proyecto llamado " + scapeCharsHard(titulo) + gag + "que consiste en " + scapeCharsHard(descripcion) + ". Y lo va a hacer junto a " + scapeCharsHard(integrantes) + ".\nAsí que... Qué dices? Se aprueba?";
   MyLog("Enviando")
   sendTextConBotones(vocalProyectosID, texto, botones);
   MyLog("Enviado")
