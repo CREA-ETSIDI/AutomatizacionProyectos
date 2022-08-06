@@ -129,6 +129,22 @@ function scapeChars(text){
   return text;
 }
 
+function scapeCharsHard(text){
+  let caracteresProhibidos = ['*', '_', '~', "`", '[', ']', '(', ')', '#', '+', '-', '=', '{', '}', '.', ',', '!', '>'];
+  for(let i = 0; i < caracteresProhibidos.length; i++)
+  {
+    let nextCharBase = 0;
+    let nextCharIndex = text.slice(nextCharBase).indexOf(caracteresProhibidos[i]);
+    while(nextCharIndex > -1 && nextCharIndex > nextCharBase)
+    {
+      text = text.slice(0, nextCharIndex) + "\\" +  text.slice(nextCharIndex); //Son 2 barras porque una es el scape de la anterior
+      nextCharBase = nextCharIndex + 3;
+      nextCharIndex = text.slice(nextCharBase).indexOf(caracteresProhibidos[i]) + nextCharBase; //Al hacer la suma, si el index es  -1, entonces nextCharIndex < nextCharBase
+    }
+  }
+  return text;
+}
+
 function verItems_IDs() {
   let form = FormApp.getActiveForm();
   let items = form.getItems();
