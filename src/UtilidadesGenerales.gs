@@ -29,13 +29,7 @@ function establecerEstadoProy(filaProj, estado) {
 }
 
 function generarArrayCalendario() { // Genera un array de ceros de 5días * [13]franjas
-  /*
-  let matriz = []; // Franjas en un día
-  for (let i = 0; i < 13; i++) {
-    matriz.push(new Array(5).fill(0)); // Días de la semana
-  }
-  */
-  /*let matriz = [
+  let matriz = [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -49,8 +43,7 @@ function generarArrayCalendario() { // Genera un array de ceros de 5días * [13]
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
-  ]*/
-  let matriz = new Array(13).fill(new Array(5).fill(0));
+  ];
   return matriz;
 }
 
@@ -174,7 +167,7 @@ function EncontradorDeIndices(matriz, elemento){
 }
 
 function MyLog(text){
-  log_file.setContent(log_file.getBlob().getDataAsString() + String(new Date()) + ": " + text + "\n");
+  log_file.setContent(log_file.getBlob().getDataAsString() + String(new Date().toLocaleString('es-ES')) + ": " + text + "\n");
 }
 
 function FormatoHorariosID(spreadsheet) {
