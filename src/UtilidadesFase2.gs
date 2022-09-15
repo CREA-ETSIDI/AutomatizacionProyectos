@@ -6,9 +6,9 @@ function getFranjasAceptadasDenegadas(calendario, propuesta) {
   // Problema dimensional aquí
   let aceptadas = generarArrayCalendario();
   let denegadas = generarArrayCalendario();
-  for (let listaDiaN = 0; listaDiaN < 5; listaDiaN++) {
-    for (let horaDiaN in calendario[listaDiaN]) {
-      if(calendario[2 * listaDiaN][horaDiaN] > 0 && calendario[2 * listaDiaN + 1][horaDiaN] > 0) { // Este check es el que necesito ???
+  for (let horaDiaN = 0; horaDiaN < 5; horaDiaN++) {
+    for (let listaDiaN = 0; listaDiaN < 13; listaDiaN++) {
+      if(calendario[listaDiaN][horaDiaN] > 0) { // Este check es el que necesito ???
         denegadas[listaDiaN][horaDiaN] = propuesta[listaDiaN][horaDiaN]; // Un poco de lógica short-circuit aquí
       }
       else {
@@ -71,7 +71,7 @@ function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosPr
 
 function getFranjasOcupadas(){
   let raw = horarioIDs.getRange(2, 4, 13, 10).getValues();
-  let output = new Array(13).fill(new Array(5));
+  let output = generarArrayCalendario();
   Logger.log(raw[0][0]=='');
   for(let x = 0; x < 5; x++){
     for(let y = 0; y < 13; y++){
