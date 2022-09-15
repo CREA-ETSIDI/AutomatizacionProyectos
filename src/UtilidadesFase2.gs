@@ -57,7 +57,7 @@ function EnviarEmailFranjasAceptadas(franjasAceptadas, franjasDenegadas, datosPr
   let salt = Math.round(5000 * Math.random());
   let cuerpo = HtmlService.createHtmlOutput(("Hola, te informamos de los horarios que se pueden reservar y cuáles no de su previa solicitud: <br>Franjas reservadas:<br>"
   + franjasToText(franjasAceptadas)
-  +"<br>Debido al protocolo de prevención covid, no podemos dejarte las siguientes franjas:<br>"
+  +"<br>Debido a aforos máximos de la sala y concurrencia de proyectos, no podemos dejarte las siguientes franjas:<br>"
   + franjasToText(franjasDenegadas)
   +'<br><br>Si quieres continuar con el proceso de inscripción del proyecto pulsa <a href="'
   + queryAprobado(filaProyectoRaw, salt)
