@@ -36,13 +36,14 @@ function GeneradorHora(row) {
 }
 
 function EnviarMensajeProyectoCreadoResponsable(datosProyecto){
-  let text = "TU PROYECTO HA SIDO APROBADO!!\n\nPróximamente nuestra vocal de proyectos, CRIS✨, se pondrá en contacto contigo para reuniros, hacer un tour por nuestra sala y darte la huella para que puedas acceder en el horario asignado.\n\nAquí adjunto la documentación importante:\n- protocolo COVID (¡¡¡Respetalo!!! o el demonio de Verónica te maldecira)\n-Normativa proyectos\n\nY recuerda: no rompas cosas, no te mueras y diviértete!! :))))))))";
+  let text = "TU PROYECTO HA SIDO APROBADO!!\n\nPróximamente nuestra vocal de proyectos, CRIS✨, se pondrá en contacto contigo para reuniros, hacer un tour por nuestra sala y darte la huella para que puedas acceder en el horario asignado.\n\nAquí adjunto la documentación importante:\n- Normativa de proyectos (¡¡¡Respetalo!!! o el demonio de Verónica te maldecirá)\n-Uso del lector de huella (que se tiene que rellenar para que podáis usar el lector de huella)\n- Plantilla del CREAReport :)\n\nY recuerda: no rompas cosas, no quemes la sala, no te mueras y diviértete!! :))))))))";
   let archivos = carpetaDocumentacion.getFiles();
   let archivosParaEnviar = [];
   while(archivos.hasNext()){
     archivosParaEnviar.push(archivos.next().getAs(MimeType.PDF));
   }
-  GmailApp.sendEmail(datosProyecto[prjIndex.responsable.email], "Proyecto aprobado super yay", text, {
+  let mail = datosProyecto[prjIndex.responsable.email];
+  GmailApp.sendEmail(mail, "Proyecto aprobado super yay", text, {
     attachments: archivosParaEnviar
   })
 }
